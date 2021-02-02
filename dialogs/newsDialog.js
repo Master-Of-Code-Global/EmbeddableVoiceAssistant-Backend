@@ -37,10 +37,11 @@ class NewsDialog extends ComponentDialog {
 	}
 	
 	async returnNews(stepContext) {
-		await stepContext.context.sendActivity('You are searching about:', null, InputHints.IgnoringInput);
-		await stepContext.context.sendActivity(stepContext.options.newsType, null, InputHints.IgnoringInput);
-
 		const searchStr = (stepContext.options.newsType !== 'What is the latest news?') ? stepContext.options.newsType : '';
+		const initialMessage = (stepContext.options.newsType === 'What is the latest news?') ? "Here are some results from a search:" : `Here's the latest ${stepContext.options.newsType}:`;
+
+		await stepContext.context.sendActivity(initialMessage, null, InputHints.IgnoringInput);
+		
 		const options = {
 			qs: {
 				q: searchStr,
@@ -49,6 +50,7 @@ class NewsDialog extends ComponentDialog {
 		};
 		const responseData = await getRequestData(bingHost, options, newsHeader);
 		if (responseData.body.error) {
+			// TODO: Show user message about error
 			console.error(responseData.body.error);
 		} else {
 			if (responseData.body.value.length > 0) {
@@ -56,6 +58,7 @@ class NewsDialog extends ComponentDialog {
 				
 				await stepContext.context.sendActivity(newsCarousel, null, InputHints.IgnoringInput);
 			} else {
+				// TODO: Show user message about zero news
 				console.log('show message "News not found"');
 			}
 		}
@@ -63,24 +66,71 @@ class NewsDialog extends ComponentDialog {
 		return await stepContext.next();
 	}
 	
+
 	async choiceOptionStep(stepContext) {
-		const cardActions = [
-			{
-				type: ActionTypes.ImBack,
-				title: 'IT Tech news',
-				value: 'IT Tech news',
-			},
-			{
-				type: ActionTypes.ImBack,
-				title: '🍏 Health news',
-				value: 'Health news'
-			},
-			{
-				type: ActionTypes.ImBack,
-				title: 'Tell me a joke 🙃',
-				value: 'Tell me a joke',
-			}
-		];
+		let cardActions;
+		console.log('');
+		console.log(stepContext.options.newsType);
+		console.log('');
+		switch (stepContext.options.newsType) {
+			case 'What is the latest news?':
+				cardActions = [
+					{
+						type: ActionTypes.ImBack,
+						title: 'IT Tech news',
+						value: 'IT Tech news',
+					},
+					{
+						type: ActionTypes.ImBack,
+						title: '🍏 Health news',
+						value: 'Health news'
+					},
+					{
+						type: ActionTypes.ImBack,
+						title: 'Tell me a joke 🙃',
+						value: 'Tell me a joke',
+					}
+				];
+				break;
+			case 'IT Tech news':
+				cardActions = [
+					{
+						type: ActionTypes.ImBack,
+						title: 'AI news 💪🏽',
+						value: 'AI news',
+					},
+					{
+						type: ActionTypes.ImBack,
+						title: '🌎 World news',
+						value: 'World news'
+					},
+					{
+						type: ActionTypes.ImBack,
+						title: 'What\'s the weather today? ⛅',
+						value: 'What\'s the weather today?',
+					}
+				];
+				break;
+			default:
+				cardActions = [
+					{
+						type: ActionTypes.ImBack,
+						title: 'What\'s the weather today? ⛅',
+						value: 'What is the weather today?',
+					},
+					{
+						type: ActionTypes.ImBack,
+						title: 'What is the latest news?',
+						value: 'What is the latest news?',
+					},
+					{
+						type: ActionTypes.ImBack,
+						title: 'Tell me a joke 🙃',
+						value: 'Tell me a joke',
+					}
+				];
+				break;
+		}
 		
 		const reply = MessageFactory.suggestedActions(cardActions);
 		// return await stepContext.context.sendActivity(reply);
