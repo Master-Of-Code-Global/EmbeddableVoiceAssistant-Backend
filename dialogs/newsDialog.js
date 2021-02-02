@@ -1,8 +1,11 @@
 const { ComponentDialog, WaterfallDialog, ChoicePrompt, TextPrompt } = require('botbuilder-dialogs');
-const { ActivityTypes, ActionTypes } = require('botbuilder-core');
+const { ActivityTypes } = require('botbuilder-core');
 const { MessageFactory, InputHints } = require('botbuilder');
 const { LuisRecognizer } = require('botbuilder-ai');
 const { MainDialog } = require('./mainDialog');
+const { getRequestData } = require('../services/request');
+const { buildNewsCarousel } = require('../cardTemplates/carousel');
+const buttons = require('../cardTemplates/buttons');
 
 const NEWS_DIALOG = 'NEWS_DIALOG';
 const WEATHER_DIALOG = 'WEATHER_DIALOG';
@@ -10,6 +13,13 @@ const JOKE_DIALOG = 'JOKE_DIALOG';
 
 const WATERFALL_DIALOG = 'WATERFALL_DIALOG';
 const NEWS_PROMPT = 'NEWS_PROMPT';
+
+let bingHost = process.env.BING_SEARCH_V7_ENDPOINT;
+
+const newsHeader = {
+	"Ocp-Apim-Subscription-Key": process.env.BING_SEARCH_V7_SUBSCRIPTION_KEY
+};
+let mkt = '';
 
 class NewsDialog extends ComponentDialog {
 	constructor(luisRecognizer) {
@@ -28,30 +38,62 @@ class NewsDialog extends ComponentDialog {
 	}
 	
 	async returnNews(stepContext) {
-		await stepContext.context.sendActivity('You are searching about:', null, InputHints.IgnoringInput);
-		await stepContext.context.sendActivity(stepContext.options.newsType, null, InputHints.IgnoringInput);
+		const searchStr = (stepContext.options.newsType !== 'What is the latest news?') ? stepContext.options.newsType : '';
+		const initialMessage = (stepContext.options.newsType === 'What is the latest news?') ? "Here are some results from a search:" : `Here's the latest ${stepContext.options.newsType}:`;
+
+		await stepContext.context.sendActivity(initialMessage, null, InputHints.IgnoringInput);
+		
+		const options = {
+			qs: {
+				q: searchStr,
+				mkt: mkt
+			}
+		};
+		const responseData = await getRequestData(bingHost, options, newsHeader);
+		if (responseData.body.error) {
+			// TODO: Show user message about error
+			console.error(responseData.body.error);
+		} else {
+			if (responseData.body.value.length > 0) {
+				const newsCarousel = buildNewsCarousel(responseData.body.value);
+				
+				await stepContext.context.sendActivity(newsCarousel, null, InputHints.IgnoringInput);
+			} else {
+				// TODO: Show user message about zero news
+				console.log('show message "News not found"');
+			}
+		}
 		
 		return await stepContext.next();
 	}
 	
+
 	async choiceOptionStep(stepContext) {
-		const cardActions = [
-			{
-				type: ActionTypes.ImBack,
-				title: 'What is the weather?',
-				value: 'What is the weather?',
-			},
-			{
-				type: ActionTypes.ImBack,
-				title: 'TECH news',
-				value: 'TECH news',
-			},
-			{
-				type: ActionTypes.ImBack,
-				title: 'Tell me a joke',
-				value: 'Tell me a joke',
-			}
-		];
+		let cardActions;
+		
+		switch (stepContext.options.newsType) {
+			case 'What is the latest news?':
+				cardActions = [
+					buttons.itNews,
+					buttons.healthNews,
+					buttons.tellJoke
+				];
+				break;
+			case 'IT Tech news':
+				cardActions = [
+					buttons.aiNews,
+					buttons.worldNews,
+					buttons.weatherToday
+				];
+				break;
+			default:
+				cardActions = [
+					buttons.weatherToday,
+					buttons.defaultNews,
+					buttons.tellJoke
+				];
+				break;
+		}
 		
 		const reply = MessageFactory.suggestedActions(cardActions);
 		// return await stepContext.context.sendActivity(reply);
