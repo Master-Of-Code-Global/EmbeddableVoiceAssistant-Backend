@@ -1,10 +1,11 @@
 const { ComponentDialog, WaterfallDialog, ChoicePrompt, TextPrompt } = require('botbuilder-dialogs');
-const { ActivityTypes, ActionTypes } = require('botbuilder-core');
+const { ActivityTypes } = require('botbuilder-core');
 const { MessageFactory, InputHints } = require('botbuilder');
 const { LuisRecognizer } = require('botbuilder-ai');
 const { MainDialog } = require('./mainDialog');
 const { getRequestData } = require('../services/request');
-const { buildNewsCarousel } = require = require('../cardTemplates/carousel');
+const { buildNewsCarousel } = require('../cardTemplates/carousel');
+const buttons = require('../cardTemplates/buttons');
 
 const NEWS_DIALOG = 'NEWS_DIALOG';
 const WEATHER_DIALOG = 'WEATHER_DIALOG';
@@ -69,65 +70,27 @@ class NewsDialog extends ComponentDialog {
 
 	async choiceOptionStep(stepContext) {
 		let cardActions;
-		console.log('');
-		console.log(stepContext.options.newsType);
-		console.log('');
+		
 		switch (stepContext.options.newsType) {
 			case 'What is the latest news?':
 				cardActions = [
-					{
-						type: ActionTypes.ImBack,
-						title: 'IT Tech news',
-						value: 'IT Tech news',
-					},
-					{
-						type: ActionTypes.ImBack,
-						title: '🍏 Health news',
-						value: 'Health news'
-					},
-					{
-						type: ActionTypes.ImBack,
-						title: 'Tell me a joke 🙃',
-						value: 'Tell me a joke',
-					}
+					buttons.itNews,
+					buttons.healthNews,
+					buttons.tellJoke
 				];
 				break;
 			case 'IT Tech news':
 				cardActions = [
-					{
-						type: ActionTypes.ImBack,
-						title: 'AI news 💪🏽',
-						value: 'AI news',
-					},
-					{
-						type: ActionTypes.ImBack,
-						title: '🌎 World news',
-						value: 'World news'
-					},
-					{
-						type: ActionTypes.ImBack,
-						title: 'What\'s the weather today? ⛅',
-						value: 'What\'s the weather today?',
-					}
+					buttons.aiNews,
+					buttons.worldNews,
+					buttons.weatherToday
 				];
 				break;
 			default:
 				cardActions = [
-					{
-						type: ActionTypes.ImBack,
-						title: 'What\'s the weather today? ⛅',
-						value: 'What is the weather today?',
-					},
-					{
-						type: ActionTypes.ImBack,
-						title: 'What is the latest news?',
-						value: 'What is the latest news?',
-					},
-					{
-						type: ActionTypes.ImBack,
-						title: 'Tell me a joke 🙃',
-						value: 'Tell me a joke',
-					}
+					buttons.weatherToday,
+					buttons.defaultNews,
+					buttons.tellJoke
 				];
 				break;
 		}
