@@ -2,4 +2,5 @@ lib/
 node_modules/
 .nyc_output/
 .vscode/
-.env 
+.env
+eva.zip

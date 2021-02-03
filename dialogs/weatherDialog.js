@@ -3,6 +3,8 @@ const { InputHints, MessageFactory } = require('botbuilder');
 const { ActivityTypes, CardFactory, ActionTypes } = require('botbuilder-core');
 const { LuisRecognizer } = require('botbuilder-ai');
 const { MainDialog } = require('./mainDialog');
+const request = require('requestretry');
+const moment = require('moment-timezone');
 
 const NEWS_DIALOG = 'NEWS_DIALOG';
 const WEATHER_DIALOG = 'WEATHER_DIALOG';
@@ -27,8 +29,79 @@ class WeatherDialog extends ComponentDialog {
 		this.initialDialogId = WATERFALL_DIALOG;
 	}
 	
+	getWeatherData(coordinates) {
+		return request.get({
+			url: process.env.CurrentWeatherUrl + coordinates +'&subscription-key=' + process.env.WeatherSubscriptionKey,
+			maxAttempts: 3,
+			retryDelay: 3000,
+			retryStrategy: request.RetryStrategies.HTTPOrNetworkError,
+			fullResponse: false
+		})
+		.then(async function(body){
+			if (body) {
+				const response = await JSON.parse(body);
+				return response.results;
+			}
+			
+			return {};
+		});
+	}
+	
+	getWeatherQuarterData(coordinates) {
+		return request.get({
+			url: process.env.QuarterWeatherUrl + coordinates + '&subscription-key=' + process.env.WeatherSubscriptionKey,
+			maxAttempts: 3,
+			retryDelay: 3000,
+			retryStrategy: request.RetryStrategies.HTTPOrNetworkError,
+			fullResponse: false
+		})
+		.then(async function(body){
+			if (body) {
+				const response = await JSON.parse(body);
+				return  response.forecasts;
+			}
+			
+			return {};
+		});
+	}
+	
+	getCoordinates(city) {
+		return request.get({
+			url: 'https://atlas.microsoft.com/search/address/json?api-version=1.0&query='+ city +'&subscription-key=' + process.env.WeatherSubscriptionKey,
+			maxAttempts: 3,
+			retryDelay: 3000,
+			retryStrategy: request.RetryStrategies.HTTPOrNetworkError,
+			fullResponse: false
+		})
+		.then(async function(body){
+			if (body) {
+				const response = await JSON.parse(body);
+				return  `${response.results[0].position.lat},${response.results[0].position.lon}`;
+			}
+			
+			return {};
+		});
+	}
+	
 	async returnWeather(stepContext) {
 		console.log('returnWeather');
+		
+		let city = 'Cherkasy';
+		
+		if (stepContext.options.weatherRequest.geographyV2) {
+			city = stepContext.options.weatherRequest.geographyV2[0].location;
+		}
+		
+		const coordinates = await this.getCoordinates(city);
+		const weatherCurrentData = await this.getWeatherData(coordinates);
+		// const weatherQuarterData = await this.getWeatherQuarterData(coordinates);
+		
+		// console.log('coordinates: ', coordinates);
+		// console.log('weatherData: ', weatherCurrentData);
+		// console.log('weatherQuarterData: ', weatherQuarterData);
+		
+		let momentDate = moment(weatherCurrentData[0].dateTime);
+		
 		// await stepContext.context.sendActivity('you wanna get the weather', null, InputHints.IgnoringInput);
 		// await stepContext.context.sendActivity(stepContext.options.weatherType, null, InputHints.IgnoringInput);
 		
@@ -39,18 +112,18 @@ class WeatherDialog extends ComponentDialog {
 				"body": [
 					{
 						"type": "TextBlock",
-						"text": "Cherkasy, CK",
+						"text": city,
 						"size": "Large",
 						"isSubtle": true
 					},
 					{
 						"type": "TextBlock",
-						"text": "01/25/2021 11:24 PM",
+						"text": momentDate.format("YYYY-MM-DD HH:mm A"),
 						"spacing": "None"
 					},
 					{
 						"type": "TextBlock",
-						"text": "The skies will be mostly cloudy",
+						"text": weatherCurrentData[0].phrase,
 						"spacing": "None"
 					},
 					{
@@ -73,7 +146,7 @@ class WeatherDialog extends ComponentDialog {
 								"items": [
 									{
 										"type": "TextBlock",
-										"text": "6",
+										"text": `${weatherCurrentData[0].temperature.value}`,
 										"size": "ExtraLarge",
 										"spacing": "None"
 									}
@@ -97,12 +170,12 @@ class WeatherDialog extends ComponentDialog {
 								"items": [
 									{
 										"type": "TextBlock",
-										"text": "Hi of 8",
+										"text": "Hi of " + weatherCurrentData[0].apparentTemperature.value,
 										"horizontalAlignment": "Left"
 									},
 									{
 										"type": "TextBlock",
-										"text": "Lo of 6",
+										"text": "Lo of " + weatherCurrentData[0].windChillTemperature.value,
 										"horizontalAlignment": "Left",
 										"spacing": "None"
 									}
@@ -153,14 +226,14 @@ class WeatherDialog extends ComponentDialog {
 		}
 		
 		const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);
-		console.log('weather luisResult: ', luisResult);
+		// console.log('weather luisResult: ', luisResult);
 		switch (LuisRecognizer.topIntent(luisResult)) {
 			case 'NewsUpdate_Request':
 				return await stepContext.beginDialog(NEWS_DIALOG, { newsType: luisResult.text });
 			
 			case 'WeatherForecast_Request':
 			case 'QR_Weather_suggestion_chips':
-				return await stepContext.beginDialog(WEATHER_DIALOG, { weatherType: luisResult.text });
+				return await stepContext.beginDialog(WEATHER_DIALOG, { weatherRequest: luisResult.entities });
 			
 			case 'TellJoke_Request':
 				return await stepContext.beginDialog(JOKE_DIALOG);
