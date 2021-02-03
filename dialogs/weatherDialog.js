@@ -67,7 +67,7 @@ class WeatherDialog extends ComponentDialog {
 	
 	getCoordinates(city) {
 		return request.get({
-			url: 'https://atlas.microsoft.com/search/address/json?api-version=1.0&query='+ city +'&subscription-key=' + process.env.WeatherSubscriptionKey,
+			url: process.env.CoordinatesUrl + city +'&subscription-key=' + process.env.WeatherSubscriptionKey,
 			maxAttempts: 3,
 			retryDelay: 3000,
 			retryStrategy: request.RetryStrategies.HTTPOrNetworkError,
