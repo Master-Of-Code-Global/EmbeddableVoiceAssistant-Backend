@@ -51,16 +51,15 @@ class NewsDialog extends ComponentDialog {
 		};
 		const responseData = await getRequestData(bingHost, options, newsHeader);
 		if (responseData.body.error) {
-			// TODO: Show user message about error
 			console.error(responseData.body.error);
+			await stepContext.context.sendActivity("Unfortunately, the News search service is unavailable at the moment. Please try again later.", null, InputHints.IgnoringInput);
 		} else {
 			if (responseData.body.value.length > 0) {
 				const newsCarousel = buildNewsCarousel(responseData.body.value);
 				
 				await stepContext.context.sendActivity(newsCarousel, null, InputHints.IgnoringInput);
 			} else {
-				// TODO: Show user message about zero news
-				console.log('show message "News not found"');
+				await stepContext.context.sendActivity("Unfortunately, the News search service is unavailable at the moment. Please try again later.", null, InputHints.IgnoringInput);
 			}
 		}
 		
