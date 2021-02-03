@@ -200,6 +200,8 @@ class MainDialog extends ComponentDialog {
 		
 		const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);
 
+		console.log('luisResult: ', luisResult);
+		
 		switch (LuisRecognizer.topIntent(luisResult)) {
 			case 'NewsUpdate_Request':
 				return await stepContext.beginDialog(NEWS_DIALOG, { newsType: luisResult.text });
