@@ -106,86 +106,6 @@ class WeatherDialog extends ComponentDialog {
 		// await stepContext.context.sendActivity(stepContext.options.weatherType, null, InputHints.IgnoringInput);
 		
 		const weatherCard = CardFactory.adaptiveCard(
-			// {
-			// 	"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-			// 	"type": "AdaptiveCard",
-			// 	"version": "1.0",
-			// 	"body": [
-			// 		{
-			// 			"type": "TextBlock",
-			// 			"text": city,
-			// 			"size": "Large",
-			// 			"isSubtle": true
-			// 		},
-			// 		{
-			// 			"type": "TextBlock",
-			// 			"text": momentDate.format("YYYY-MM-DD HH:mm A"),
-			// 			"spacing": "None"
-			// 		},
-			// 		{
-			// 			"type": "TextBlock",
-			// 			"text": weatherCurrentData[0].phrase,
-			// 			"spacing": "None"
-			// 		},
-			// 		{
-			// 			"type": "ColumnSet",
-			// 			"columns": [
-			// 				{
-			// 					"type": "Column",
-			// 					"width": "auto",
-			// 					"items": [
-			// 						{
-			// 							"type": "Image",
-			// 							"url": "https://www.modlabs.net/uploads/gallery/blogs/the-cloud.jpg",
-			// 							"size": "Large"
-			// 						}
-			// 					]
-			// 				},
-			// 				{
-			// 					"type": "Column",
-			// 					"width": "auto",
-			// 					"items": [
-			// 						{
-			// 							"type": "TextBlock",
-			// 							"text": `${weatherCurrentData[0].temperature.value}`,
-			// 							"size": "ExtraLarge",
-			// 							"spacing": "None"
-			// 						}
-			// 					]
-			// 				},
-			// 				{
-			// 					"type": "Column",
-			// 					"width": "stretch",
-			// 					"items": [
-			// 						{
-			// 							"type": "TextBlock",
-			// 							"text": "°C",
-			// 							"weight": "Bolder",
-			// 							"spacing": "Small"
-			// 						}
-			// 					]
-			// 				},
-			// 				{
-			// 					"type": "Column",
-			// 					"width": "stretch",
-			// 					"items": [
-			// 						{
-			// 							"type": "TextBlock",
-			// 							"text": "Hi of " + weatherCurrentData[0].apparentTemperature.value,
-			// 							"horizontalAlignment": "Left"
-			// 						},
-			// 						{
-			// 							"type": "TextBlock",
-			// 							"text": "Lo of " + weatherCurrentData[0].windChillTemperature.value,
-			// 							"horizontalAlignment": "Left",
-			// 							"spacing": "None"
-			// 						}
-			// 					]
-			// 				}
-			// 			]
-			// 		}
-			// 	]
-			// }
 			{
 				"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
 				"type": "AdaptiveCard",
@@ -200,7 +120,7 @@ class WeatherDialog extends ComponentDialog {
 								"items": [
 									{
 										"type": "Image",
-										"url": "https://messagecardplayground.azurewebsites.net/assets/Mostly%20Cloudy-Square.png",
+										"url": "/resources/sunny.svg",
 										"size": "Stretch",
 										"altText": "Mostly cloudy weather"
 									}
