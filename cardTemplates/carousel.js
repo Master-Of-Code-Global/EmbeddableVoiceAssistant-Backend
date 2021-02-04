@@ -62,7 +62,7 @@ buildNewsCarousel = (newsList) => {
                   {
                     "type": "Image",
                     "url": element.image.thumbnail.contentUrl,
-                    "size": "medium"
+                    "size": "Large"
                   }
                 ]
               });

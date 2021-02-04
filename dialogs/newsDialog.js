@@ -19,7 +19,7 @@ let bingHost = process.env.BING_SEARCH_V7_ENDPOINT;
 const newsHeader = {
 	"Ocp-Apim-Subscription-Key": process.env.BING_SEARCH_V7_SUBSCRIPTION_KEY
 };
-let mkt = 'en-US';
+let mkt = '';
 
 class NewsDialog extends ComponentDialog {
 	constructor(luisRecognizer) {
