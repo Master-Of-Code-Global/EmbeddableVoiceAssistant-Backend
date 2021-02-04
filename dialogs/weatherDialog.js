@@ -48,6 +48,7 @@ class WeatherDialog extends ComponentDialog {
 	}
 	
 	getWeatherQuarterData(coordinates) {
+		// console.log('weather url: ', process.env.QuarterWeatherUrl + coordinates + '&subscription-key=' + process.env.WeatherSubscriptionKey);
 		return request.get({
 			url: process.env.QuarterWeatherUrl + coordinates + '&subscription-key=' + process.env.WeatherSubscriptionKey,
 			maxAttempts: 3,
@@ -84,7 +85,7 @@ class WeatherDialog extends ComponentDialog {
 	}
 	
 	async returnWeather(stepContext) {
-		console.log('returnWeather');
+		// console.log('returnWeather');
 		
 		let city = 'Cherkasy';
 		
@@ -98,7 +99,7 @@ class WeatherDialog extends ComponentDialog {
 		
 		// console.log('coordinates: ', coordinates);
 		// console.log('weatherData: ', weatherCurrentData);
-		console.log('weatherQuarterData: ', weatherQuarterData);
+		// console.log('weatherQuarterData: ', weatherQuarterData);
 		
 		let momentDate = moment(weatherCurrentData[0].dateTime);
 		
@@ -120,7 +121,7 @@ class WeatherDialog extends ComponentDialog {
 								"items": [
 									{
 										"type": "Image",
-										"url": "/resources/sunny.svg",
+										"url": "https://messagecardplayground.azurewebsites.net/assets/Mostly%20Cloudy-Square.png",
 										"size": "Stretch",
 										"altText": "Mostly cloudy weather"
 									}
@@ -171,9 +172,9 @@ class WeatherDialog extends ComponentDialog {
 									},
 									{
 										"type": "Image",
-										"size": "Large",
-										"url": "https://messagecardplayground.azurewebsites.net/assets/"+ (weatherQuarterData[0].phrase).replace(' ', '-') +".png",
-										"altText": weatherQuarterData[0].phrase
+										"size": "auto",
+										"url": "https://messagecardplayground.azurewebsites.net/assets/Drizzle-Square.png",
+										"altText": "Drizzly weather"
 									},
 									{
 										"type": "TextBlock",
@@ -197,8 +198,8 @@ class WeatherDialog extends ComponentDialog {
 									{
 										"type": "Image",
 										"size": "auto",
-										"url": "https://messagecardplayground.azurewebsites.net/assets/"+ (weatherQuarterData[1].phrase).replace(' ', '-') +".png",
-										"altText": weatherQuarterData[1].phrase
+										"url": "https://messagecardplayground.azurewebsites.net/assets/Drizzle-Square.png",
+										"altText": "Drizzly weather"
 									},
 									{
 										"type": "TextBlock",
@@ -222,8 +223,8 @@ class WeatherDialog extends ComponentDialog {
 									{
 										"type": "Image",
 										"size": "auto",
-										"url": "https://messagecardplayground.azurewebsites.net/assets/"+ (weatherQuarterData[2].phrase).replace(' ', '-') +".png",
-										"altText": weatherQuarterData[1].phrase
+										"url": "https://messagecardplayground.azurewebsites.net/assets/Drizzle-Square.png",
+										"altText": "Drizzly weather"
 									},
 									{
 										"type": "TextBlock",
@@ -247,8 +248,8 @@ class WeatherDialog extends ComponentDialog {
 									{
 										"type": "Image",
 										"size": "auto",
-										"url": "https://messagecardplayground.azurewebsites.net/assets/"+ (weatherQuarterData[3].phrase).replace(' ', '-') +".png",
-										"altText": weatherQuarterData[3].phrase
+										"url": "https://messagecardplayground.azurewebsites.net/assets/Drizzle-Square.png",
+										"altText": "Drizzly weather"
 									},
 									{
 										"type": "TextBlock",
@@ -296,14 +297,16 @@ class WeatherDialog extends ComponentDialog {
 	async showDataStep(stepContext){
 		// await MainDialog.showDataStep(stepContext);
 		
-		console.log('MainDialog.showDataStep: ', stepContext.result);
+		// console.log('MainDialog.showDataStep: ', stepContext.result);
 
 		if (!this.luisRecognizer.isConfigured) {
 			return await stepContext.beginDialog('MainDialog');
 		}
 		
 		const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);
+		
 		// console.log('weather luisResult: ', luisResult);
+		
 		switch (LuisRecognizer.topIntent(luisResult)) {
 			case 'NewsUpdate_Request':
 				return await stepContext.beginDialog(NEWS_DIALOG, { newsType: luisResult.text });
