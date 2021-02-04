@@ -6,6 +6,7 @@ const { MainDialog } = require('./mainDialog');
 const { getRequestData } = require('../services/request');
 const { buildNewsCarousel } = require('../cardTemplates/carousel');
 const buttons = require('../cardTemplates/buttons');
+const { getCountryCodeByCoordinates } = require('../services/geolocation');
 
 const NEWS_DIALOG = 'NEWS_DIALOG';
 const WEATHER_DIALOG = 'WEATHER_DIALOG';
@@ -38,6 +39,11 @@ class NewsDialog extends ComponentDialog {
 	}
 	
 	async returnNews(stepContext) {
+		const userGeo = await getCountryCodeByCoordinates('47.591180,-122.332700');
+		if (userGeo) {
+			console.log(stepContext.context);
+			console.log('save geo to user data');
+		}
 		const searchStr = (stepContext.options.newsType !== 'What is the latest news?') ? stepContext.options.newsType : '';
 		const initialMessage = (stepContext.options.newsType === 'What is the latest news?') ? "Here are some results from a search:" : `Here's the latest ${stepContext.options.newsType}:`;
 

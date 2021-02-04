@@ -2,9 +2,9 @@ let request = require('requestretry');
 
 
 
-getRequestData = async (url, queryParams, headers) => {
+getRequestData = async (uri, queryParams = {}, headers = {}) => {
   return await request.get({
-    url,
+    uri,
     ...queryParams,
     json: true,
     maxAttempts: 3,
