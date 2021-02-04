@@ -47,10 +47,11 @@ buildNewsCarousel = (newsList) => {
             ]
           }]
         }],
-        "tap": {
-          "type": "openUrl",
-          "value": (element.ampUrl) ? element.ampUrl : element.url,
-        }
+        "actions": [{
+          "type": "Action.OpenUrl",
+          "title": "Read more",
+          "url": (element.ampUrl) ? element.ampUrl : element.url,
+        }]
       }
     };
 
