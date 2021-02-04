@@ -120,7 +120,7 @@ class JokeDialog extends ComponentDialog {
 			
 			case 'WeatherForecast_Request':
 			case 'QR_Weather_suggestion_chips':
-				return await stepContext.beginDialog(WEATHER_DIALOG, { weatherType: luisResult.text });
+				return await stepContext.beginDialog(WEATHER_DIALOG, { weatherRequest: luisResult.entities });
 			
 			case 'TellJoke_Request':
 			case 'QR_Another_joke':
