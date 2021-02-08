@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 const { ActivityTypes, CardFactory, ActionTypes } = require('botbuilder-core');
 const { TimexProperty } = require('@microsoft/recognizers-text-data-types-timex-expression');
-const { MessageFactory, InputHints } = require('botbuilder');
+const { MessageFactory, InputHints, UserState } = require('botbuilder');
 const { LuisRecognizer } = require('botbuilder-ai');
 const { ComponentDialog, DialogSet, DialogTurnStatus, TextPrompt, WaterfallDialog, ChoicePrompt } = require('botbuilder-dialogs');
 const { NEWS_DIALOG, NewsDialog } = require('./newsDialog');
@@ -13,8 +13,10 @@ const OPTIONS_PROMPT = 'optionsPrompt';
 const MAIN_WATERFALL_DIALOG = 'optionsDialog';
 
 class MainDialog extends ComponentDialog {
-    constructor(luisRecognizer) {
+    constructor(luisRecognizer, userState) {
         super('MainDialog');
+
+        this.userState = userState;
 
         if (!luisRecognizer) throw new Error('[MainDialog]: Missing parameter \'luisRecognizer\' is required');
         this.luisRecognizer = luisRecognizer;
@@ -25,7 +27,7 @@ class MainDialog extends ComponentDialog {
         // This is a sample "book a flight" dialog.
         // this.addDialog(new ChoicePrompt(OPTIONS_PROMPT));
         this.addDialog(new TextPrompt(OPTIONS_PROMPT));
-	      this.addDialog(new NewsDialog(this.luisRecognizer));
+	      this.addDialog(new NewsDialog(this.luisRecognizer, this.userState));
 	      this.addDialog(new JokeDialog(this.luisRecognizer));
 	      this.addDialog(new WeatherDialog(this.luisRecognizer));
 	      this.addDialog(new WaterfallDialog(MAIN_WATERFALL_DIALOG, [
@@ -44,8 +46,9 @@ class MainDialog extends ComponentDialog {
      * If no dialog is active, it will start the default dialog.
      * @param {*} turnContext
      * @param {*} accessor
+     * @param {*} userAccessor
      */
-    async run(turnContext, accessor) {
+    async run(turnContext, accessor, userAccessor) {
 	    const dialogSet = new DialogSet(accessor);
 	    dialogSet.add(this);
 	

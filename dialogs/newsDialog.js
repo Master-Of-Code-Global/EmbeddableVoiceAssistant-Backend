@@ -1,6 +1,6 @@
 const { ComponentDialog, WaterfallDialog, ChoicePrompt, TextPrompt } = require('botbuilder-dialogs');
 const { ActivityTypes } = require('botbuilder-core');
-const { MessageFactory, InputHints } = require('botbuilder');
+const { MessageFactory, InputHints, ConsoleTranscriptLogger } = require('botbuilder');
 const { LuisRecognizer } = require('botbuilder-ai');
 const { MainDialog } = require('./mainDialog');
 const { getRequestData } = require('../services/request');
@@ -15,6 +15,8 @@ const JOKE_DIALOG = 'JOKE_DIALOG';
 const WATERFALL_DIALOG = 'WATERFALL_DIALOG';
 const NEWS_PROMPT = 'NEWS_PROMPT';
 
+const USER_PROFILE_PROPERTY = 'userProfile';
+
 let bingHost = process.env.BING_SEARCH_V7_ENDPOINT;
 
 const newsHeader = {
@@ -23,13 +25,16 @@ const newsHeader = {
 let mkt = '';
 
 class NewsDialog extends ComponentDialog {
-	constructor(luisRecognizer) {
+	constructor(luisRecognizer, userState) {
 		super(NEWS_DIALOG);
 		
 		this.luisRecognizer = luisRecognizer;
+		this.userProfile = userState.createProperty(USER_PROFILE_PROPERTY);
 		
 		this.addDialog(new TextPrompt(NEWS_PROMPT));
 		this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
+			this.requestLocation.bind(this),
+			this.captureCoordinates.bind(this),
 			this.returnNews.bind(this),
 			this.choiceOptionStep.bind(this),
 			this.showDataStep.bind(this)
@@ -37,13 +42,42 @@ class NewsDialog extends ComponentDialog {
 		
 		this.initialDialogId = WATERFALL_DIALOG;
 	}
+
+	async requestLocation(stepContext) {
+		const profile = await this.userProfile.get(stepContext.context);
+		console.log('');
+		console.log('--------------------- Profile ---------------------');
+		console.log(profile);
+		console.log('');
+		return await stepContext.prompt(NEWS_PROMPT, 'Please share your location.');
+	}
+
+	async captureCoordinates(stepContext) {
+		// temp coordinates '47.591180,-122.332700'
+		let profile = await this.userProfile.get(stepContext.context);
+		const userGeo = await getCountryCodeByCoordinates(stepContext.result);
+		if (userGeo) {
+			if (profile !== undefined) {
+				profile.location = userGeo;
+			} else {
+				profile = {
+					location: userGeo
+				};
+			}
+			
+			this.userProfile.set(stepContext.context, profile);
+			console.log('');
+			console.log('------------------------------------------------------');
+			console.log(this.userProfile);
+			console.log('------------------------------------------------------');
+			console.log('');
+		}
+
+		return await stepContext.next();
+	}
 	
 	async returnNews(stepContext) {
-		const userGeo = await getCountryCodeByCoordinates('47.591180,-122.332700');
-		if (userGeo) {
-			console.log(stepContext.context);
-			console.log('save geo to user data');
-		}
+		
 		const searchStr = (stepContext.options.newsType !== 'What is the latest news?') ? stepContext.options.newsType : '';
 		const initialMessage = (stepContext.options.newsType === 'What is the latest news?') ? "Here are some results from a search:" : `Here's the latest ${stepContext.options.newsType}:`;
 

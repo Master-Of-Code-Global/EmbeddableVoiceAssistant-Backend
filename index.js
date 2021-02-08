@@ -78,7 +78,7 @@ const luisRecognizer = new IVYLuisRecognizer(luisConfig);
 
 // Create the main dialog.
 // const bookingDialog = new BookingDialog(BOOKING_DIALOG);
-const dialog = new MainDialog(luisRecognizer);
+const dialog = new MainDialog(luisRecognizer, userState);
 // const dialog = new MainDialog(luisRecognizer, bookingDialog);
 const bot = new DialogAndWelcomeBot(conversationState, userState, dialog);
 
