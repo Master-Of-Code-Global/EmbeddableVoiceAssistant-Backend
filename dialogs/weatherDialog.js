@@ -165,7 +165,7 @@ class WeatherDialog extends ComponentDialog {
 								"items": [
 									{
 										"type": "Image",
-										"url": process.env.WeatherIconsUrl + weatherIcons[weatherCurrentData[0].iconCode]+".svg",
+										"url": process.env.WeatherIconsUrl + weatherIcons[weatherCurrentData[0].iconCode]+".png",
 										"size": "Stretch",
 										"altText": "Mostly cloudy weather"
 									}
@@ -217,7 +217,7 @@ class WeatherDialog extends ComponentDialog {
 									{
 										"type": "Image",
 										"size": "auto",
-										"url": process.env.WeatherIconsUrl + weatherIcons[weatherQuarterData[0].iconCode]+".svg",
+										"url": process.env.WeatherIconsUrl + weatherIcons[weatherQuarterData[0].iconCode]+".png",
 										"altText": "Drizzly weather"
 									},
 									{
@@ -242,7 +242,7 @@ class WeatherDialog extends ComponentDialog {
 									{
 										"type": "Image",
 										"size": "auto",
-										"url": process.env.WeatherIconsUrl + weatherIcons[weatherQuarterData[1].iconCode]+".svg",
+										"url": process.env.WeatherIconsUrl + weatherIcons[weatherQuarterData[1].iconCode]+".png",
 										"altText": "Drizzly weather"
 									},
 									{
@@ -267,7 +267,7 @@ class WeatherDialog extends ComponentDialog {
 									{
 										"type": "Image",
 										"size": "auto",
-										"url": process.env.WeatherIconsUrl + weatherIcons[weatherQuarterData[2].iconCode]+".svg",
+										"url": process.env.WeatherIconsUrl + weatherIcons[weatherQuarterData[2].iconCode]+".png",
 										"altText": "Drizzly weather"
 									},
 									{
@@ -292,7 +292,7 @@ class WeatherDialog extends ComponentDialog {
 									{
 										"type": "Image",
 										"size": "auto",
-										"url": process.env.WeatherIconsUrl + weatherIcons[weatherQuarterData[3].iconCode]+".svg",
+										"url": process.env.WeatherIconsUrl + weatherIcons[weatherQuarterData[3].iconCode]+".png",
 										"altText": "Drizzly weather"
 									},
 									{
