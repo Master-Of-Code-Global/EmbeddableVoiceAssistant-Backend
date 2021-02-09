@@ -13,6 +13,52 @@ const JOKE_DIALOG = 'JOKE_DIALOG';
 const WATERFALL_DIALOG = 'WATERFALL_DIALOG';
 const WEATHER_PROMPT = 'WEATHER_PROMPT';
 
+const weatherIcons = [
+	'',
+	'sunny',
+	'sunny',
+	'partly_sunny',
+	'partly_sunny',
+	'sunny',
+	'partly_sunny',
+	'cloudy',
+	'dreary',
+	'',
+	'',
+	'fog',
+	'showers',
+	'mostly_cloudy_with_showers',
+	'mostly_cloudy_with_showers',
+	'thunderstorms',
+	'thunderstorms',
+	'thunderstorms',
+	'showers',
+	'snow',
+	'mostly_cloudy_with_showers',
+	'mostly_cloudy_with_showers',
+	'snow',
+	'mostly_cloudy_with_showers',
+	'sleer',
+	'sleer',
+	'showers',
+	'showers',
+	'sunny',
+	'snow',
+	'windy',
+	'moon',
+	'moon',
+	'partly_cloudy',
+	'partly_cloudy',
+	'partly_cloudy',
+	'partly_cloudy',
+	'partly_cloudy_with_showers',
+	'partly_cloudy_with_showers',
+	'thunderstorms',
+	'thunderstorms',
+	'mostly_cloudy_with_flurrie',
+	'mostly_cloudy_with_showers'
+];
+
 class WeatherDialog extends ComponentDialog {
 	constructor(luisRecognizer) {
 		super(WEATHER_DIALOG);
@@ -86,7 +132,6 @@ class WeatherDialog extends ComponentDialog {
 	
 	async returnWeather(stepContext) {
 		// console.log('returnWeather');
-		
 		let city = 'Cherkasy';
 		
 		if (stepContext.options.weatherRequest.geographyV2) {
@@ -97,9 +142,8 @@ class WeatherDialog extends ComponentDialog {
 		const weatherCurrentData = await this.getWeatherData(coordinates);
 		const weatherQuarterData = await this.getWeatherQuarterData(coordinates);
 		
-		// console.log('coordinates: ', coordinates);
-		// console.log('weatherData: ', weatherCurrentData);
-		// console.log('weatherQuarterData: ', weatherQuarterData);
+		console.log('City coord: ', city, coordinates);
+		console.log('weatherQuarterData: ', weatherQuarterData);
 		
 		let momentDate = moment(weatherCurrentData[0].dateTime);
 		
@@ -121,7 +165,7 @@ class WeatherDialog extends ComponentDialog {
 								"items": [
 									{
 										"type": "Image",
-										"url": "https://messagecardplayground.azurewebsites.net/assets/Mostly%20Cloudy-Square.png",
+										"url": process.env.WeatherIconsUrl + weatherIcons[weatherCurrentData[0].iconCode]+".png",
 										"size": "Stretch",
 										"altText": "Mostly cloudy weather"
 									}
@@ -173,7 +217,7 @@ class WeatherDialog extends ComponentDialog {
 									{
 										"type": "Image",
 										"size": "auto",
-										"url": "https://messagecardplayground.azurewebsites.net/assets/Drizzle-Square.png",
+										"url": process.env.WeatherIconsUrl + weatherIcons[weatherQuarterData[0].iconCode]+".png",
 										"altText": "Drizzly weather"
 									},
 									{
@@ -198,7 +242,7 @@ class WeatherDialog extends ComponentDialog {
 									{
 										"type": "Image",
 										"size": "auto",
-										"url": "https://messagecardplayground.azurewebsites.net/assets/Drizzle-Square.png",
+										"url": process.env.WeatherIconsUrl + weatherIcons[weatherQuarterData[1].iconCode]+".png",
 										"altText": "Drizzly weather"
 									},
 									{
@@ -223,7 +267,7 @@ class WeatherDialog extends ComponentDialog {
 									{
 										"type": "Image",
 										"size": "auto",
-										"url": "https://messagecardplayground.azurewebsites.net/assets/Drizzle-Square.png",
+										"url": process.env.WeatherIconsUrl + weatherIcons[weatherQuarterData[2].iconCode]+".png",
 										"altText": "Drizzly weather"
 									},
 									{
@@ -248,7 +292,7 @@ class WeatherDialog extends ComponentDialog {
 									{
 										"type": "Image",
 										"size": "auto",
-										"url": "https://messagecardplayground.azurewebsites.net/assets/Drizzle-Square.png",
+										"url": process.env.WeatherIconsUrl + weatherIcons[weatherQuarterData[3].iconCode]+".png",
 										"altText": "Drizzly weather"
 									},
 									{
