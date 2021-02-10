@@ -21,7 +21,7 @@ const jokes = [
 let usedJokes = [];
 
 class JokeDialog extends ComponentDialog {
-	constructor(luisRecognizer) {
+	constructor(luisRecognizer, userState) {
 		super(JOKE_DIALOG);
 		
 		this.luisRecognizer = luisRecognizer;

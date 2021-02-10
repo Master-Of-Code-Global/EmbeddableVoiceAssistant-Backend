@@ -29,7 +29,7 @@ class NewsDialog extends ComponentDialog {
 		super(NEWS_DIALOG);
 		
 		this.luisRecognizer = luisRecognizer;
-		this.userProfile = userState.createProperty(USER_PROFILE_PROPERTY);
+		this.userProfile = userState;
 		
 		this.addDialog(new TextPrompt(NEWS_PROMPT));
 		this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
@@ -44,19 +44,27 @@ class NewsDialog extends ComponentDialog {
 	}
 
 	async requestLocation(stepContext) {
+		console.log('requestLocation: ');
 		const profile = await this.userProfile.get(stepContext.context);
-		console.log('');
-		console.log('--------------------- Profile ---------------------');
-		console.log(profile);
-		console.log('');
+		// console.log('');
+		// console.log('--------------------- Profile ---------------------');
+		// console.log(profile);
+		// console.log('');
+		
+		if (profile && this.userProfile.location){
+			return await stepContext.next();
+		}
+		
 		return await stepContext.prompt(NEWS_PROMPT, 'Please share your location.');
 	}
 
 	async captureCoordinates(stepContext) {
 		// temp coordinates '47.591180,-122.332700'
 		let profile = await this.userProfile.get(stepContext.context);
+		console.log('captureCoordinates: ');
 		const userGeo = await getCountryCodeByCoordinates(stepContext.result);
 		if (userGeo) {
+			console.log('userGeo: ', userGeo);
 			if (profile !== undefined) {
 				profile.location = userGeo;
 			} else {
@@ -65,12 +73,18 @@ class NewsDialog extends ComponentDialog {
 				};
 			}
 			
-			this.userProfile.set(stepContext.context, profile);
+			this.userProfile.location = userGeo;
+			this.userProfile.saveChanges(stepContext.context);
+			
+			console.log('');
+			console.log('------------------------- News Dialog -----------------------------');
+			console.log(this.userProfile.location);
 			console.log('');
 			console.log('------------------------------------------------------');
-			console.log(this.userProfile);
-			console.log('------------------------------------------------------');
-			console.log('');
+			// console.log('');
+			// console.log(this.userProfile.storage.memory);
+			// console.log('------------------------------------------------------');
+			// console.log('');
 		}
 
 		return await stepContext.next();
@@ -151,7 +165,7 @@ class NewsDialog extends ComponentDialog {
 		}
 
 		const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);
-		console.log('news luisResult: ', luisResult);
+		// console.log('news luisResult: ', luisResult);
 		switch (LuisRecognizer.topIntent(luisResult)) {
 			case 'NewsUpdate_Request':
 				return await stepContext.beginDialog(NEWS_DIALOG, { newsType: luisResult.text });

@@ -13,6 +13,8 @@ const JOKE_DIALOG = 'JOKE_DIALOG';
 const WATERFALL_DIALOG = 'WATERFALL_DIALOG';
 const WEATHER_PROMPT = 'WEATHER_PROMPT';
 
+const USER_PROFILE_PROPERTY = 'userProfile';
+
 const weatherIcons = [
 	'',
 	'sunny',
@@ -60,10 +62,11 @@ const weatherIcons = [
 ];
 
 class WeatherDialog extends ComponentDialog {
-	constructor(luisRecognizer) {
+	constructor(luisRecognizer, userState) {
 		super(WEATHER_DIALOG);
 		
 		this.luisRecognizer = luisRecognizer;
+		this.userProfile = userState;
 		
 		this.addDialog(new TextPrompt(WEATHER_PROMPT));
 		this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
@@ -134,6 +137,12 @@ class WeatherDialog extends ComponentDialog {
 		// console.log('returnWeather');
 		let city = 'Cherkasy';
 		
+		console.log('');
+		console.log('------------------------ Weather Dialog ------------------------------');
+		console.log(this.userProfile.location);
+		console.log('');
+		console.log('------------------------------------------------------');
+		
 		if (stepContext.options.weatherRequest.geographyV2) {
 			city = stepContext.options.weatherRequest.geographyV2[0].location;
 		}
@@ -142,8 +151,8 @@ class WeatherDialog extends ComponentDialog {
 		const weatherCurrentData = await this.getWeatherData(coordinates);
 		const weatherQuarterData = await this.getWeatherQuarterData(coordinates);
 		
-		console.log('City coord: ', city, coordinates);
-		console.log('weatherQuarterData: ', weatherQuarterData);
+		// console.log('City coord: ', city, coordinates);
+		// console.log('weatherQuarterData: ', weatherQuarterData);
 		
 		let momentDate = moment(weatherCurrentData[0].dateTime);
 		

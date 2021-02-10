@@ -28,8 +28,8 @@ class MainDialog extends ComponentDialog {
         // this.addDialog(new ChoicePrompt(OPTIONS_PROMPT));
         this.addDialog(new TextPrompt(OPTIONS_PROMPT));
 	      this.addDialog(new NewsDialog(this.luisRecognizer, this.userState));
-	      this.addDialog(new JokeDialog(this.luisRecognizer));
-	      this.addDialog(new WeatherDialog(this.luisRecognizer));
+	      this.addDialog(new JokeDialog(this.luisRecognizer, this.userState));
+	      this.addDialog(new WeatherDialog(this.luisRecognizer, this.userState));
 	      this.addDialog(new WaterfallDialog(MAIN_WATERFALL_DIALOG, [
 		      this.showPossibilities.bind(this),
           this.showDataStep.bind(this)
