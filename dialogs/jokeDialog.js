@@ -2,7 +2,6 @@ const { ComponentDialog, WaterfallDialog, TextPrompt } = require('botbuilder-dia
 const { InputHints, MessageFactory } = require('botbuilder');
 const { ActivityTypes, ActionTypes,  } = require('botbuilder-core');
 const { LuisRecognizer } = require('botbuilder-ai');
-const { MainDialog } = require('./mainDialog');
 
 const NEWS_DIALOG = 'NEWS_DIALOG';
 const WEATHER_DIALOG = 'WEATHER_DIALOG';
@@ -21,7 +20,7 @@ const jokes = [
 let usedJokes = [];
 
 class JokeDialog extends ComponentDialog {
-	constructor(luisRecognizer, userState) {
+	constructor(luisRecognizer) {
 		super(JOKE_DIALOG);
 		
 		this.luisRecognizer = luisRecognizer;
@@ -37,8 +36,6 @@ class JokeDialog extends ComponentDialog {
 	}
 	
 	async returnJokes(stepContext) {
-		// await stepContext.context.sendActivity('What do clouds wear under their shorts?', null, InputHints.IgnoringInput);
-		
 		const joke = this.getJoke();
 		
 		await stepContext.context.sendActivities([
@@ -97,19 +94,11 @@ class JokeDialog extends ComponentDialog {
 		];
 		
 		const reply = MessageFactory.suggestedActions(cardActions);
-		// return await stepContext.context.sendActivity(reply);
-		
 		return await stepContext.prompt(JOKE_PROMPT, { prompt: reply });
 	}
 	
 	async showDataStep(stepContext){
-		// await MainDialog.showDataStep(stepContext);
-		
-		console.log('MainDialog.showDataStep: ', stepContext.result);
-		// await stepContext.context.sendActivity(stepContext.result.value, stepContext.result.value, InputHints.IgnoringInput);
-		
 		if (!this.luisRecognizer.isConfigured) {
-			// LUIS is not configured, we just run the BookingDialog path.
 			return await stepContext.beginDialog('MainDialog');
 		}
 		

@@ -1,8 +1,8 @@
 const { ComponentDialog, WaterfallDialog, TextPrompt } = require('botbuilder-dialogs');
 const { InputHints, MessageFactory } = require('botbuilder');
-const { ActivityTypes, CardFactory, ActionTypes } = require('botbuilder-core');
+const { CardFactory, ActionTypes } = require('botbuilder-core');
 const { LuisRecognizer } = require('botbuilder-ai');
-const { MainDialog } = require('./mainDialog');
+const { LocationDialog, LOCATION_DIALOG } = require('./locationDialog');
 const request = require('requestretry');
 const moment = require('moment-timezone');
 
@@ -12,8 +12,6 @@ const JOKE_DIALOG = 'JOKE_DIALOG';
 
 const WATERFALL_DIALOG = 'WATERFALL_DIALOG';
 const WEATHER_PROMPT = 'WEATHER_PROMPT';
-
-const USER_PROFILE_PROPERTY = 'userProfile';
 
 const weatherIcons = [
 	'',
@@ -69,7 +67,9 @@ class WeatherDialog extends ComponentDialog {
 		this.userProfile = userState;
 		
 		this.addDialog(new TextPrompt(WEATHER_PROMPT));
+		this.addDialog(new LocationDialog(this.userProfile));
 		this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
+			this.getLocation.bind(this),
 			this.returnWeather.bind(this),
 			this.choiceOptionStep.bind(this),
 			this.showDataStep.bind(this)
@@ -77,6 +77,8 @@ class WeatherDialog extends ComponentDialog {
 		
 		this.initialDialogId = WATERFALL_DIALOG;
 	}
+	
+	
 	
 	getWeatherData(coordinates) {
 		return request.get({
@@ -97,7 +99,6 @@ class WeatherDialog extends ComponentDialog {
 	}
 	
 	getWeatherQuarterData(coordinates) {
-		// console.log('weather url: ', process.env.QuarterWeatherUrl + coordinates + '&subscription-key=' + process.env.WeatherSubscriptionKey);
 		return request.get({
 			url: process.env.QuarterWeatherUrl + coordinates + '&subscription-key=' + process.env.WeatherSubscriptionKey,
 			maxAttempts: 3,
@@ -115,9 +116,10 @@ class WeatherDialog extends ComponentDialog {
 		});
 	}
 	
-	getCoordinates(city) {
+	getCoordinates(city, countryCode) {
+		let withCountry = countryCode ? '&countrySet='+countryCode : '';
 		return request.get({
-			url: process.env.CoordinatesUrl + city +'&subscription-key=' + process.env.WeatherSubscriptionKey,
+			url: process.env.CoordinatesUrl + city +'&subscription-key=' + process.env.WeatherSubscriptionKey + withCountry,
 			maxAttempts: 3,
 			retryDelay: 3000,
 			retryStrategy: request.RetryStrategies.HTTPOrNetworkError,
@@ -133,31 +135,38 @@ class WeatherDialog extends ComponentDialog {
 		});
 	}
 	
-	async returnWeather(stepContext) {
-		// console.log('returnWeather');
-		let city = 'Cherkasy';
-		
-		console.log('');
-		console.log('------------------------ Weather Dialog ------------------------------');
-		console.log(this.userProfile.location);
-		console.log('');
-		console.log('------------------------------------------------------');
+	async getLocation(stepContext) {
+		let city = undefined;
 		
 		if (stepContext.options.weatherRequest.geographyV2) {
 			city = stepContext.options.weatherRequest.geographyV2[0].location;
+			
+			return stepContext.next({city});
+		} else {
+			return await stepContext.beginDialog(LOCATION_DIALOG);
+		}
+	}
+	
+	async returnWeather(stepContext) {
+		let city = undefined;
+		let countryCode = undefined;
+		
+		if (stepContext.result !== undefined && stepContext.result.city) {
+			city = stepContext.result.city;
+		} else if (this.userProfile.location && this.userProfile.location.city){
+			city = this.userProfile.location.city;
+			if (this.userProfile.location.countryCode) {
+				countryCode = this.userProfile.location.countryCode;
+			}
+		} else {
+			return await stepContext.beginDialog(WEATHER_DIALOG);
 		}
 		
-		const coordinates = await this.getCoordinates(city);
+		const coordinates = await this.getCoordinates(city, countryCode);
 		const weatherCurrentData = await this.getWeatherData(coordinates);
 		const weatherQuarterData = await this.getWeatherQuarterData(coordinates);
 		
-		// console.log('City coord: ', city, coordinates);
-		// console.log('weatherQuarterData: ', weatherQuarterData);
-		
 		let momentDate = moment(weatherCurrentData[0].dateTime);
-		
-		// await stepContext.context.sendActivity('you wanna get the weather', null, InputHints.IgnoringInput);
-		// await stepContext.context.sendActivity(stepContext.options.weatherType, null, InputHints.IgnoringInput);
 		
 		const weatherCard = CardFactory.adaptiveCard(
 			{
@@ -348,17 +357,11 @@ class WeatherDialog extends ComponentDialog {
 	}
 	
 	async showDataStep(stepContext){
-		// await MainDialog.showDataStep(stepContext);
-		
-		// console.log('MainDialog.showDataStep: ', stepContext.result);
-
 		if (!this.luisRecognizer.isConfigured) {
 			return await stepContext.beginDialog('MainDialog');
 		}
 		
 		const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);
-		
-		// console.log('weather luisResult: ', luisResult);
 		
 		switch (LuisRecognizer.topIntent(luisResult)) {
 			case 'NewsUpdate_Request':

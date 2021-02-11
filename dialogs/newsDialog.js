@@ -1,12 +1,10 @@
-const { ComponentDialog, WaterfallDialog, ChoicePrompt, TextPrompt } = require('botbuilder-dialogs');
-const { ActivityTypes } = require('botbuilder-core');
-const { MessageFactory, InputHints, ConsoleTranscriptLogger } = require('botbuilder');
+const { ComponentDialog, WaterfallDialog, TextPrompt } = require('botbuilder-dialogs');
+const { MessageFactory, InputHints } = require('botbuilder');
 const { LuisRecognizer } = require('botbuilder-ai');
-const { MainDialog } = require('./mainDialog');
 const { getRequestData } = require('../services/request');
 const { buildNewsCarousel } = require('../cardTemplates/carousel');
 const buttons = require('../cardTemplates/buttons');
-const { getCountryCodeByCoordinates } = require('../services/geolocation');
+const { countries } = require('../resources/countries');
 
 const NEWS_DIALOG = 'NEWS_DIALOG';
 const WEATHER_DIALOG = 'WEATHER_DIALOG';
@@ -14,8 +12,6 @@ const JOKE_DIALOG = 'JOKE_DIALOG';
 
 const WATERFALL_DIALOG = 'WATERFALL_DIALOG';
 const NEWS_PROMPT = 'NEWS_PROMPT';
-
-const USER_PROFILE_PROPERTY = 'userProfile';
 
 let bingHost = process.env.BING_SEARCH_V7_ENDPOINT;
 
@@ -44,47 +40,24 @@ class NewsDialog extends ComponentDialog {
 	}
 
 	async requestLocation(stepContext) {
-		console.log('requestLocation: ');
-		const profile = await this.userProfile.get(stepContext.context);
-		// console.log('');
-		// console.log('--------------------- Profile ---------------------');
-		// console.log(profile);
-		// console.log('');
-		
-		if (profile && this.userProfile.location){
+		if (this.userProfile.location && this.userProfile.location.countryCode){
 			return await stepContext.next();
 		}
 		
-		return await stepContext.prompt(NEWS_PROMPT, 'Please share your location.');
+		return await stepContext.prompt(NEWS_PROMPT, 'Please share your Country.');
 	}
 
 	async captureCoordinates(stepContext) {
 		// temp coordinates '47.591180,-122.332700'
-		let profile = await this.userProfile.get(stepContext.context);
-		console.log('captureCoordinates: ');
-		const userGeo = await getCountryCodeByCoordinates(stepContext.result);
-		if (userGeo) {
-			console.log('userGeo: ', userGeo);
-			if (profile !== undefined) {
-				profile.location = userGeo;
-			} else {
-				profile = {
-					location: userGeo
-				};
-			}
+		const country = stepContext.result;
+		if (country) {
+			mkt = countries[country.toLowerCase()];
 			
-			this.userProfile.location = userGeo;
+			this.userProfile.location = {
+				countryCode: mkt
+			};
+			
 			this.userProfile.saveChanges(stepContext.context);
-			
-			console.log('');
-			console.log('------------------------- News Dialog -----------------------------');
-			console.log(this.userProfile.location);
-			console.log('');
-			console.log('------------------------------------------------------');
-			// console.log('');
-			// console.log(this.userProfile.storage.memory);
-			// console.log('------------------------------------------------------');
-			// console.log('');
 		}
 
 		return await stepContext.next();
@@ -100,9 +73,10 @@ class NewsDialog extends ComponentDialog {
 		const options = {
 			qs: {
 				q: searchStr,
-				mkt: mkt
+				cc: mkt
 			}
 		};
+		
 		const responseData = await getRequestData(bingHost, options, newsHeader);
 		if (responseData.body.error) {
 			console.error(responseData.body.error);
@@ -149,23 +123,15 @@ class NewsDialog extends ComponentDialog {
 		}
 		
 		const reply = MessageFactory.suggestedActions(cardActions);
-		// return await stepContext.context.sendActivity(reply);
-		
 		return await stepContext.prompt(NEWS_PROMPT, { prompt: reply });
 	}
 	
 	async showDataStep(stepContext){
-		// await MainDialog.showDataStep(stepContext);
-		
-		console.log('MainDialog.showDataStep: ', stepContext.result);
-		// await stepContext.context.sendActivity(stepContext.result.value, stepContext.result.value, InputHints.IgnoringInput);
 		if (!this.luisRecognizer.isConfigured) {
-			// LUIS is not configured, we just run the BookingDialog path.
 			return await stepContext.beginDialog('MainDialog');
 		}
 
 		const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);
-		// console.log('news luisResult: ', luisResult);
 		switch (LuisRecognizer.topIntent(luisResult)) {
 			case 'NewsUpdate_Request':
 				return await stepContext.beginDialog(NEWS_DIALOG, { newsType: luisResult.text });
