@@ -68,33 +68,39 @@ class NewsDialog extends ComponentDialog {
 	
 	async returnNews(stepContext) {
 		
-		const searchStr = (stepContext.options.newsType !== 'What is the latest news?') ? stepContext.options.newsType : '';
-		const initialMessage = (stepContext.options.newsType === 'What is the latest news?') ? "Here are some results from a search:" : `Here's the latest ${stepContext.options.newsType}:`;
+		try {
+			const searchStr = (stepContext.options.newsType !== 'What is the latest news?') ? stepContext.options.newsType : '';
+			const initialMessage = (stepContext.options.newsType === 'What is the latest news?') ? "Here are some results from a search:" : `Here's the latest ${stepContext.options.newsType}:`;
 
-		await stepContext.context.sendActivity(initialMessage, null, InputHints.IgnoringInput);
-		
-		const options = {
-			qs: {
-				q: searchStr,
-				cc: mkt
-			}
-		};
-		
-		const responseData = await getRequestData(bingHost, options, newsHeader);
-		if (responseData.body.error) {
-			console.error(responseData.body.error);
-			await stepContext.context.sendActivity("Unfortunately, the News search service is unavailable at the moment. Please try again later.", null, InputHints.IgnoringInput);
-		} else {
-			if (responseData.body.value.length > 0) {
-				const newsCarousel = buildNewsCarousel(responseData.body.value);
-				
-				await stepContext.context.sendActivity(newsCarousel, null, InputHints.IgnoringInput);
-			} else {
+			await stepContext.context.sendActivity(initialMessage, null, InputHints.IgnoringInput);
+
+			const options = {
+				qs: {
+					q: searchStr,
+					cc: mkt
+				}
+			};
+
+			const responseData = await getRequestData(bingHost, options, newsHeader);
+			if (responseData.body.error) {
+				console.error(responseData.body.error);
 				await stepContext.context.sendActivity("Unfortunately, the News search service is unavailable at the moment. Please try again later.", null, InputHints.IgnoringInput);
+			} else {
+				if (responseData.body.value.length > 0) {
+					const newsCarousel = buildNewsCarousel(responseData.body.value);
+
+					await stepContext.context.sendActivity(newsCarousel, null, InputHints.IgnoringInput);
+				} else {
+					await stepContext.context.sendActivity("Unfortunately, the News search service is unavailable at the moment. Please try again later.", null, InputHints.IgnoringInput);
+				}
 			}
-		}
+
+			return await stepContext.next();
+		} catch (err) {
+			console.error(`\n Error in the News Dialog: return news method`);
+			console.error(err);
+		} 
 		
-		return await stepContext.next();
 	}
 }
 
