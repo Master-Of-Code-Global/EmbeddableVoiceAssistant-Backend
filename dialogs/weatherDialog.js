@@ -81,36 +81,35 @@ class WeatherDialog extends ComponentDialog {
 	
 	
 	
-	async getWeatherData(coordinates) {
+	async getWeatherData(coordinates, stepContext) {
 		const url = process.env.CurrentWeatherUrl + coordinates +'&subscription-key=' + process.env.WeatherSubscriptionKey;
 		const options = {
 			fullResponse: false
 		};
 		const responseData = await getRequestData(url, options);
 		
-		if (responseData.results.length > 0) {
+		if (responseData.results && responseData.results.length > 0) {
 			return responseData.results[0];
 		} else {
-			return {};
+			return await stepContext.context.sendActivity("Unfortunately, the Current Weather service is unavailable at the moment. Please try again later.", null, InputHints.IgnoringInput);
 		}
 	}
 	
-	async getWeatherQuarterData(coordinates) {
-		
+	async getWeatherQuarterData(coordinates, stepContext) {
 		const url = process.env.QuarterWeatherUrl + coordinates + '&subscription-key=' + process.env.WeatherSubscriptionKey;
 		const options = {
 			fullResponse: false
 		};
 		const responseData = await getRequestData(url, options);
 		
-		if (responseData.forecasts.length > 0) {
+		if (responseData.forecasts && responseData.forecasts.length > 0) {
 			return responseData.forecasts;
 		} else {
-			return {};
+			return await stepContext.context.sendActivity("Unfortunately, the Quarter Weather service is unavailable at the moment. Please try again later.", null, InputHints.IgnoringInput);
 		}
 	}
 	
-	async getCoordinates(city, countryCode) {
+	async getCoordinates(city, countryCode, stepContext) {
 		let withCountry = countryCode ? '&countrySet='+countryCode : '';
 		
 		const url = process.env.CoordinatesUrl + city +'&subscription-key=' + process.env.WeatherSubscriptionKey + withCountry;
@@ -119,17 +118,15 @@ class WeatherDialog extends ComponentDialog {
 		};
 		const responseData = await getRequestData(url, options);
 		
-		if (responseData.results.length > 0) {
+		if (responseData.results && responseData.results.length > 0) {
 			// const response = await JSON.parse(responseData.results);
 			return  `${responseData.results[0].position.lat},${responseData.results[0].position.lon}`;
 		} else {
-			return {};
+			return await stepContext.context.sendActivity("Unfortunately, the Coordinates service is unavailable at the moment. Please try again later.", null, InputHints.IgnoringInput);
 		}
 	}
 	
 	async getLocation(stepContext) {
-		console.log('weatherRequest', stepContext.options.weatherRequest);
-		
 		if (stepContext.options.weatherRequest.geographyV2) {
 			const city = stepContext.options.weatherRequest.geographyV2[0].location;
 			
@@ -154,9 +151,9 @@ class WeatherDialog extends ComponentDialog {
 			return await stepContext.beginDialog(WEATHER_DIALOG);
 		}
 		
-		const coordinates = await this.getCoordinates(city, countryCode);
-		const weatherCurrentData = await this.getWeatherData(coordinates);
-		const weatherQuarterData = await this.getWeatherQuarterData(coordinates);
+		const coordinates = await this.getCoordinates(city, countryCode, stepContext);
+		const weatherCurrentData = await this.getWeatherData(coordinates, stepContext);
+		const weatherQuarterData = await this.getWeatherQuarterData(coordinates, stepContext);
 		
 		let momentDate = moment(weatherCurrentData.dateTime);
 		
