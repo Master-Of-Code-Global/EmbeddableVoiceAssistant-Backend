@@ -5,6 +5,7 @@ const { LuisRecognizer } = require('botbuilder-ai');
 const { LocationDialog, LOCATION_DIALOG } = require('./locationDialog');
 const request = require('requestretry');
 const moment = require('moment-timezone');
+const { getRequestData } = require('../services/request');
 
 const NEWS_DIALOG = 'NEWS_DIALOG';
 const WEATHER_DIALOG = 'WEATHER_DIALOG';
@@ -80,66 +81,57 @@ class WeatherDialog extends ComponentDialog {
 	
 	
 	
-	getWeatherData(coordinates) {
-		return request.get({
-			url: process.env.CurrentWeatherUrl + coordinates +'&subscription-key=' + process.env.WeatherSubscriptionKey,
-			maxAttempts: 3,
-			retryDelay: 3000,
-			retryStrategy: request.RetryStrategies.HTTPOrNetworkError,
+	async getWeatherData(coordinates) {
+		const url = process.env.CurrentWeatherUrl + coordinates +'&subscription-key=' + process.env.WeatherSubscriptionKey;
+		const options = {
 			fullResponse: false
-		})
-		.then(async function(body){
-			if (body) {
-				const response = await JSON.parse(body);
-				return response.results;
-			}
-			
+		};
+		const responseData = await getRequestData(url, options);
+		
+		if (responseData.results.length > 0) {
+			return responseData.results[0];
+		} else {
 			return {};
-		});
+		}
 	}
 	
-	getWeatherQuarterData(coordinates) {
-		return request.get({
-			url: process.env.QuarterWeatherUrl + coordinates + '&subscription-key=' + process.env.WeatherSubscriptionKey,
-			maxAttempts: 3,
-			retryDelay: 3000,
-			retryStrategy: request.RetryStrategies.HTTPOrNetworkError,
+	async getWeatherQuarterData(coordinates) {
+		
+		const url = process.env.QuarterWeatherUrl + coordinates + '&subscription-key=' + process.env.WeatherSubscriptionKey;
+		const options = {
 			fullResponse: false
-		})
-		.then(async function(body){
-			if (body) {
-				const response = await JSON.parse(body);
-				return  response.forecasts;
-			}
-			
+		};
+		const responseData = await getRequestData(url, options);
+		
+		if (responseData.forecasts.length > 0) {
+			return responseData.forecasts;
+		} else {
 			return {};
-		});
+		}
 	}
 	
-	getCoordinates(city, countryCode) {
+	async getCoordinates(city, countryCode) {
 		let withCountry = countryCode ? '&countrySet='+countryCode : '';
-		return request.get({
-			url: process.env.CoordinatesUrl + city +'&subscription-key=' + process.env.WeatherSubscriptionKey + withCountry,
-			maxAttempts: 3,
-			retryDelay: 3000,
-			retryStrategy: request.RetryStrategies.HTTPOrNetworkError,
+		
+		const url = process.env.CoordinatesUrl + city +'&subscription-key=' + process.env.WeatherSubscriptionKey + withCountry;
+		const options = {
 			fullResponse: false
-		})
-		.then(async function(body){
-			if (body) {
-				const response = await JSON.parse(body);
-				return  `${response.results[0].position.lat},${response.results[0].position.lon}`;
-			}
-			
+		};
+		const responseData = await getRequestData(url, options);
+		
+		if (responseData.results.length > 0) {
+			// const response = await JSON.parse(responseData.results);
+			return  `${responseData.results[0].position.lat},${responseData.results[0].position.lon}`;
+		} else {
 			return {};
-		});
+		}
 	}
 	
 	async getLocation(stepContext) {
-		let city = undefined;
+		console.log('weatherRequest', stepContext.options.weatherRequest);
 		
 		if (stepContext.options.weatherRequest.geographyV2) {
-			city = stepContext.options.weatherRequest.geographyV2[0].location;
+			const city = stepContext.options.weatherRequest.geographyV2[0].location;
 			
 			return stepContext.next({city});
 		} else {
@@ -166,7 +158,7 @@ class WeatherDialog extends ComponentDialog {
 		const weatherCurrentData = await this.getWeatherData(coordinates);
 		const weatherQuarterData = await this.getWeatherQuarterData(coordinates);
 		
-		let momentDate = moment(weatherCurrentData[0].dateTime);
+		let momentDate = moment(weatherCurrentData.dateTime);
 		
 		const weatherCard = CardFactory.adaptiveCard(
 			{
@@ -183,7 +175,7 @@ class WeatherDialog extends ComponentDialog {
 								"items": [
 									{
 										"type": "Image",
-										"url": process.env.WeatherIconsUrl + weatherIcons[weatherCurrentData[0].iconCode]+".png",
+										"url": process.env.WeatherIconsUrl + weatherIcons[weatherCurrentData.iconCode]+".png",
 										"size": "Stretch",
 										"altText": "Mostly cloudy weather"
 									}
@@ -202,13 +194,13 @@ class WeatherDialog extends ComponentDialog {
 									},
 									{
 										"type": "TextBlock",
-										"text": `${weatherCurrentData[0].temperature.value}` + "°C",
+										"text": `${weatherCurrentData.temperature.value}` + "°C",
 										"size": "ExtraLarge",
 										"height": "stretch"
 									},
 									{
 										"type": "TextBlock",
-										"text": weatherCurrentData[0].phrase,
+										"text": weatherCurrentData.phrase,
 										"spacing": "None",
 										"wrap": true,
 										"height": "stretch",
