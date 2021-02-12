@@ -95,14 +95,23 @@ class JokeDialog extends ComponentDialog {
 		const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);
 		switch (LuisRecognizer.topIntent(luisResult)) {
 			case 'NewsUpdate_Request':
+				console.log('Joke Dialog: Start News Dialog');
+				console.log('----------------------------------------------------');
+				console.log('');
 				return await stepContext.beginDialog(NEWS_DIALOG, { newsType: luisResult.text });
 			
 			case 'WeatherForecast_Request':
 			case 'QR_Weather_suggestion_chips':
+				console.log('Joke Dialog: Start Weather Dialog');
+				console.log('----------------------------------------------------');
+				console.log('');
 				return await stepContext.beginDialog(WEATHER_DIALOG, { weatherRequest: luisResult.entities });
 			
 			case 'TellJoke_Request':
 			case 'QR_Another_joke':
+				console.log('Joke Dialog: Start Joke Dialog');
+				console.log('----------------------------------------------------');
+				console.log('');
 				return await stepContext.beginDialog(JOKE_DIALOG);
 			
 			default: {
