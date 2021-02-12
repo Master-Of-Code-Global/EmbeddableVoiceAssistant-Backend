@@ -3,6 +3,8 @@ const { InputHints, MessageFactory } = require('botbuilder');
 const { ActivityTypes, ActionTypes,  } = require('botbuilder-core');
 const { LuisRecognizer } = require('botbuilder-ai');
 
+const buttons = require('../cardTemplates/buttons');
+
 const NEWS_DIALOG = 'NEWS_DIALOG';
 const WEATHER_DIALOG = 'WEATHER_DIALOG';
 const JOKE_DIALOG = 'JOKE_DIALOG';
@@ -76,21 +78,9 @@ class JokeDialog extends ComponentDialog {
 	
 	async choiceOptionStep(stepContext) {
 		const cardActions = [
-			{
-				type: ActionTypes.ImBack,
-				title: 'Another One',
-				value: 'Another One',
-			},
-			{
-				type: ActionTypes.ImBack,
-				title: 'IT news',
-				value: 'IT news',
-			},
-			{
-				type: ActionTypes.ImBack,
-				title: 'What is the weather tomorrow?',
-				value: 'What is the weather tomorrow?',
-			}
+			buttons.anotherJoke,
+			buttons.itNews,
+			buttons.tomorrowWeather
 		];
 		
 		const reply = MessageFactory.suggestedActions(cardActions);

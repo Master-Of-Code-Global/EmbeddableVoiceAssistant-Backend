@@ -6,6 +6,7 @@ const { LocationDialog, LOCATION_DIALOG } = require('./locationDialog');
 const request = require('requestretry');
 const moment = require('moment-timezone');
 const { getRequestData } = require('../services/request');
+const buttons = require('../cardTemplates/buttons');
 
 const NEWS_DIALOG = 'NEWS_DIALOG';
 const WEATHER_DIALOG = 'WEATHER_DIALOG';
@@ -326,21 +327,9 @@ class WeatherDialog extends ComponentDialog {
 	
 	async choiceOptionStep(stepContext) {
 		const cardActions = [
-			{
-				type: ActionTypes.ImBack,
-				title: 'What about tomorrow?',
-				value: 'What about tomorrow?',
-			},
-			{
-				type: ActionTypes.ImBack,
-				title: 'Last news',
-				value: 'Last news',
-			},
-			{
-				type: ActionTypes.ImBack,
-				title: 'Tell me a joke',
-				value: 'Tell me a joke',
-			}
+			buttons.tomorrowWeather,
+			buttons.defaultNews,
+			buttons.tellJoke
 		];
 		
 		const reply = MessageFactory.suggestedActions(cardActions);

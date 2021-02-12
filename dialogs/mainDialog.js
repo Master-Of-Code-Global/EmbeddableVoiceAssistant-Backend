@@ -6,6 +6,7 @@ const { ComponentDialog, DialogSet, DialogTurnStatus, TextPrompt, WaterfallDialo
 const { NEWS_DIALOG, NewsDialog } = require('./newsDialog');
 const { JOKE_DIALOG, JokeDialog } = require('./jokeDialog');
 const { WEATHER_DIALOG, WeatherDialog } = require('./weatherDialog');
+const buttons = require('../cardTemplates/buttons');
 const OPTIONS_PROMPT = 'optionsPrompt';
 const MAIN_WATERFALL_DIALOG = 'optionsDialog';
 
@@ -50,21 +51,9 @@ class MainDialog extends ComponentDialog {
 	
     async showPossibilities(stepContext){
 	    const cardActions = [
-		    {
-			    type: ActionTypes.ImBack,
-			    title: 'What is the weather today?',
-			    value: 'What is the weather today?',
-		    },
-		    {
-			    type: ActionTypes.ImBack,
-			    title: 'What is the latest news?',
-			    value: 'What is the latest news?',
-		    },
-		    {
-			    type: ActionTypes.ImBack,
-			    title: 'Tell me a joke',
-			    value: 'Tell me a joke',
-		    }
+		    buttons.weatherToday,
+		    buttons.defaultNews,
+		    buttons.tellJoke
 	    ];
 	
 	    const reply = MessageFactory.suggestedActions(cardActions, '');
