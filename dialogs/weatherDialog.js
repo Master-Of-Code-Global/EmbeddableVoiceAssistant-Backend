@@ -3,10 +3,9 @@ const { InputHints, MessageFactory } = require('botbuilder');
 const { CardFactory, ActionTypes } = require('botbuilder-core');
 const { LuisRecognizer } = require('botbuilder-ai');
 const { LocationDialog, LOCATION_DIALOG } = require('./locationDialog');
-const request = require('requestretry');
 const moment = require('moment-timezone');
 const { getRequestData } = require('../services/request');
-const buttons = require('../cardTemplates/buttons');
+const { StarterDialog } = require('./starter');
 
 const NEWS_DIALOG = 'NEWS_DIALOG';
 const WEATHER_DIALOG = 'WEATHER_DIALOG';
@@ -64,6 +63,7 @@ const weatherIcons = [
 class WeatherDialog extends ComponentDialog {
 	constructor(luisRecognizer, userState) {
 		super(WEATHER_DIALOG);
+		// super({dialog: WEATHER_DIALOG, luisRecognizer, userState});
 		
 		this.luisRecognizer = luisRecognizer;
 		this.userProfile = userState;
@@ -92,11 +92,12 @@ class WeatherDialog extends ComponentDialog {
 		if (responseData.results && responseData.results.length > 0) {
 			return responseData.results[0];
 		} else {
-			return await stepContext.context.sendActivity("Unfortunately, the Current Weather service is unavailable at the moment. Please try again later.", null, InputHints.IgnoringInput);
+			return {};
 		}
 	}
 	
 	async getWeatherQuarterData(coordinates, stepContext) {
+		
 		const url = process.env.QuarterWeatherUrl + coordinates + '&subscription-key=' + process.env.WeatherSubscriptionKey;
 		const options = {
 			fullResponse: false
@@ -106,7 +107,8 @@ class WeatherDialog extends ComponentDialog {
 		if (responseData.forecasts && responseData.forecasts.length > 0) {
 			return responseData.forecasts;
 		} else {
-			return await stepContext.context.sendActivity("Unfortunately, the Quarter Weather service is unavailable at the moment. Please try again later.", null, InputHints.IgnoringInput);
+			await stepContext.context.sendActivity("Unfortunately, the News search service is unavailable at the moment. Please try again later.", null, InputHints.IgnoringInput);
+			return {};
 		}
 	}
 	
@@ -119,11 +121,11 @@ class WeatherDialog extends ComponentDialog {
 		};
 		const responseData = await getRequestData(url, options);
 		
-		if (responseData.results && responseData.results.length > 0) {
+		if (responseData.results.length > 0) {
 			// const response = await JSON.parse(responseData.results);
 			return  `${responseData.results[0].position.lat},${responseData.results[0].position.lon}`;
 		} else {
-			return await stepContext.context.sendActivity("Unfortunately, the Coordinates service is unavailable at the moment. Please try again later.", null, InputHints.IgnoringInput);
+			return {};
 		}
 	}
 	
@@ -324,9 +326,21 @@ class WeatherDialog extends ComponentDialog {
 	
 	async choiceOptionStep(stepContext) {
 		const cardActions = [
-			buttons.tomorrowWeather,
-			buttons.defaultNews,
-			buttons.tellJoke
+			{
+				type: ActionTypes.ImBack,
+				title: 'What about tomorrow?',
+				value: 'What about tomorrow?',
+			},
+			{
+				type: ActionTypes.ImBack,
+				title: 'Last news',
+				value: 'Last news',
+			},
+			{
+				type: ActionTypes.ImBack,
+				title: 'Tell me a joke',
+				value: 'Tell me a joke',
+			}
 		];
 		
 		const reply = MessageFactory.suggestedActions(cardActions);
@@ -340,6 +354,8 @@ class WeatherDialog extends ComponentDialog {
 		}
 		
 		const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);
+		
+		console.log('topIntent: ', LuisRecognizer.topIntent(luisResult));
 		
 		switch (LuisRecognizer.topIntent(luisResult)) {
 			case 'NewsUpdate_Request':

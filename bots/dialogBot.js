@@ -26,10 +26,7 @@ class DialogBot extends ActivityHandler {
         this.userState = userState;
         this.dialog = dialog;
         this.dialogState = this.conversationState.createProperty('DialogState');
-        // this.userProfileAccessor = userState.createProperty(USER_PROFILE_PROPERTY);
 	
-	    this.userProfileAccessor.location = { countryCode: 'US', city: 'Seattle' };
-	    
         this.onMessage(async (context, next) => {
             console.log('Running dialog with Message Activity.');
             

@@ -1,10 +1,11 @@
-const { ComponentDialog, WaterfallDialog, TextPrompt } = require('botbuilder-dialogs');
+const { ComponentDialog, DialogSet, DialogTurnStatus, WaterfallDialog, TextPrompt } = require('botbuilder-dialogs');
 const { MessageFactory, InputHints } = require('botbuilder');
 const { LuisRecognizer } = require('botbuilder-ai');
 const { getRequestData } = require('../services/request');
 const { buildNewsCarousel } = require('../cardTemplates/carousel');
 const buttons = require('../cardTemplates/buttons');
 const { countries } = require('../resources/countries');
+const { StarterDialog } = require('./starter');
 
 const NEWS_DIALOG = 'NEWS_DIALOG';
 const WEATHER_DIALOG = 'WEATHER_DIALOG';
@@ -16,7 +17,8 @@ const NEWS_PROMPT = 'NEWS_PROMPT';
 let bingHost = process.env.BING_SEARCH_V7_ENDPOINT;
 
 const newsHeader = {
-	"Ocp-Apim-Subscription-Key": process.env.BING_SEARCH_V7_SUBSCRIPTION_KEY
+	"Ocp-Apim-Subscription-Key": process.env.BING_SEARCH_V7_SUBSCRIPTION_KEY,
+	"Accept-Language": 'en'
 };
 let mkt = '';
 
@@ -26,14 +28,15 @@ class NewsDialog extends ComponentDialog {
 		
 		this.luisRecognizer = luisRecognizer;
 		this.userProfile = userState;
+		this.starter = new StarterDialog();
 		
 		this.addDialog(new TextPrompt(NEWS_PROMPT));
 		this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
 			this.requestLocation.bind(this),
 			this.captureCoordinates.bind(this),
 			this.returnNews.bind(this),
-			this.choiceOptionStep.bind(this),
-			this.showDataStep.bind(this)
+			this.starter.showNewsPossibilities.bind(this),
+			this.starter.showDataStep.bind(this)
 		]));
 		
 		this.initialDialogId = WATERFALL_DIALOG;
@@ -92,62 +95,6 @@ class NewsDialog extends ComponentDialog {
 		}
 		
 		return await stepContext.next();
-	}
-	
-
-	async choiceOptionStep(stepContext) {
-		let cardActions;
-		
-		switch (stepContext.options.newsType) {
-			case 'What is the latest news?':
-				cardActions = [
-					buttons.itNews,
-					buttons.healthNews,
-					buttons.tellJoke
-				];
-				break;
-			case 'IT Tech news':
-				cardActions = [
-					buttons.aiNews,
-					buttons.worldNews,
-					buttons.weatherToday
-				];
-				break;
-			default:
-				cardActions = [
-					buttons.weatherToday,
-					buttons.defaultNews,
-					buttons.tellJoke
-				];
-				break;
-		}
-		
-		const reply = MessageFactory.suggestedActions(cardActions);
-		return await stepContext.prompt(NEWS_PROMPT, { prompt: reply });
-	}
-	
-	async showDataStep(stepContext){
-		if (!this.luisRecognizer.isConfigured) {
-			return await stepContext.beginDialog('MainDialog');
-		}
-
-		const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);
-		switch (LuisRecognizer.topIntent(luisResult)) {
-			case 'NewsUpdate_Request':
-				return await stepContext.beginDialog(NEWS_DIALOG, { newsType: luisResult.text });
-
-			case 'WeatherForecast_Request':
-			case 'QR_Weather_suggestion_chips':
-				return await stepContext.beginDialog(WEATHER_DIALOG, { weatherRequest: luisResult.entities });
-
-			case 'TellJoke_Request':
-				return await stepContext.beginDialog(JOKE_DIALOG);
-
-			default: {
-				const didntUnderstandMessageText = `Sorry, I didn't get that. Please try asking in a different way (intent was ${ stepContext.context.activity.text })`;
-				return await stepContext.context.sendActivity(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
-			}
-		}
 	}
 }
 

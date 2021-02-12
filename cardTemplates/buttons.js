@@ -42,18 +42,6 @@ const itNews = {
   value: 'IT Tech news',
 };
 
-const tomorrowWeather = {
-  type: ActionTypes.ImBack,
-  title: 'What about tomorrow?',
-  value: 'What about tomorrow?',
-};
-
-const anotherJoke = {
-  type: ActionTypes.ImBack,
-  title: 'Another One',
-  value: 'Another One',
-}
-
 module.exports = {
   weatherToday,
   defaultNews,
@@ -61,7 +49,5 @@ module.exports = {
   worldNews,
   aiNews,
   healthNews,
-  itNews,
-  tomorrowWeather,
-  anotherJoke
+  itNews
 }
