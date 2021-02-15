@@ -12,15 +12,15 @@ class MainDialog extends ComponentDialog {
         super('MainDialog');
 
         this.userState = userState;
-        this.starter = new StarterDialog();
-
+        this.starter = new StarterDialog(luisRecognizer);
+        
         if (!luisRecognizer) throw new Error('[MainDialog]: Missing parameter \'luisRecognizer\' is required');
         this.luisRecognizer = luisRecognizer;
 
         this.addDialog(new TextPrompt(OPTIONS_PROMPT));
-	      this.addDialog(new NewsDialog(this.luisRecognizer, this.userState));
-	      this.addDialog(new JokeDialog(this.luisRecognizer, this.userState));
-	      this.addDialog(new WeatherDialog(this.luisRecognizer, this.userState));
+	      this.addDialog(new NewsDialog(this.luisRecognizer, this.userState, this.starter));
+	      this.addDialog(new JokeDialog(this.luisRecognizer, this.starter));
+	      this.addDialog(new WeatherDialog(this.luisRecognizer, this.userState, this.starter));
 	      this.addDialog(new WaterfallDialog(MAIN_WATERFALL_DIALOG, [
 		      this.starter.showPossibilities.bind(this),
           this.starter.showDataStep.bind(this)
@@ -28,10 +28,6 @@ class MainDialog extends ComponentDialog {
 
         this.initialDialogId = MAIN_WATERFALL_DIALOG;
     }
-    
-    // async showPossibilities(stepContext) {
-	  //   return await this.starter.showPossibilities(stepContext);
-    // }
 	
 	/**
 	 * The run method handles the incoming activity (in the form of a TurnContext) and passes it through the dialog system.

@@ -1,19 +1,19 @@
-const { ComponentDialog, DialogSet, DialogTurnStatus } = require('botbuilder-dialogs');
 const { ActionTypes } = require('botbuilder-core');
 const { MessageFactory, InputHints } = require('botbuilder');
 const { LuisRecognizer } = require('botbuilder-ai');
-const { NEWS_DIALOG, NewsDialog } = require('./newsDialog');
-const { JOKE_DIALOG, JokeDialog } = require('./jokeDialog');
-const { WEATHER_DIALOG, WeatherDialog } = require('./weatherDialog');
-const { MainDialog } = require('./mainDialog');
+const { NEWS_DIALOG } = require('./newsDialog');
+const { JOKE_DIALOG } = require('./jokeDialog');
+const { WEATHER_DIALOG } = require('./weatherDialog');
 const buttons = require('../cardTemplates/buttons');
 
 const OPTIONS_PROMPT = 'optionsPrompt';
 const NEWS_PROMPT = 'NEWS_PROMPT';
+const JOKE_PROMPT = 'JOKE_PROMPT';
 
-class StarterDialog extends ComponentDialog {
-	constructor(props) {
-		super(props);
+class StarterDialog {
+	
+	constructor(luisRecognizer) {
+		this.luisRecognizer = luisRecognizer;
 	}
 	
 	async showPossibilities(stepContext){
@@ -70,6 +70,29 @@ class StarterDialog extends ComponentDialog {
 		return await stepContext.prompt(NEWS_PROMPT, { prompt: reply });
 	}
 	
+	async showJokePossibilities(stepContext) {
+		const cardActions = [
+			{
+				type: ActionTypes.ImBack,
+				title: 'Another One',
+				value: 'Another One',
+			},
+			{
+				type: ActionTypes.ImBack,
+				title: 'IT news',
+				value: 'IT news',
+			},
+			{
+				type: ActionTypes.ImBack,
+				title: 'What is the weather tomorrow?',
+				value: 'What is the weather tomorrow?',
+			}
+		];
+		
+		const reply = MessageFactory.suggestedActions(cardActions);
+		return await stepContext.prompt(JOKE_PROMPT, { prompt: reply });
+	}
+	
 	async showDataStep(stepContext){
 		if (!this.luisRecognizer.isConfigured) {
 			return await stepContext.beginDialog('MainDialog');
@@ -98,7 +121,7 @@ class StarterDialog extends ComponentDialog {
 			
 			case 'ST_How_are_you':
 				await stepContext.context.sendActivity("I’m good 🙂 If you are looking for a laugh, try saying ‘’Tell me a joke’’.", "I’m good 🙂 If you are looking for a laugh, try saying ‘’Tell me a joke’’.", InputHints.ExpectingInput);
-				return stepContext.next();
+				return stepContext.beginDialog('MainDialog');
 			
 			case 'ST_Microphone_Check':
 				await stepContext.context.sendActivity("🙂 Yes, I'm listening. Go ahead and ask me some of the things you see below:", "🙂 Yes, I'm listening. Go ahead and ask me some of the things you see below:", InputHints.IgnoringInput);

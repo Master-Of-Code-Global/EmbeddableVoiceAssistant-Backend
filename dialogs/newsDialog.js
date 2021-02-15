@@ -1,16 +1,10 @@
-const { ComponentDialog, DialogSet, DialogTurnStatus, WaterfallDialog, TextPrompt } = require('botbuilder-dialogs');
-const { MessageFactory, InputHints } = require('botbuilder');
-const { LuisRecognizer } = require('botbuilder-ai');
+const { ComponentDialog, WaterfallDialog, TextPrompt } = require('botbuilder-dialogs');
+const { InputHints } = require('botbuilder');
 const { getRequestData } = require('../services/request');
 const { buildNewsCarousel } = require('../cardTemplates/carousel');
-const buttons = require('../cardTemplates/buttons');
 const { countries } = require('../resources/countries');
-const { StarterDialog } = require('./starter');
 
 const NEWS_DIALOG = 'NEWS_DIALOG';
-const WEATHER_DIALOG = 'WEATHER_DIALOG';
-const JOKE_DIALOG = 'JOKE_DIALOG';
-
 const WATERFALL_DIALOG = 'WATERFALL_DIALOG';
 const NEWS_PROMPT = 'NEWS_PROMPT';
 
@@ -23,20 +17,19 @@ const newsHeader = {
 let mkt = '';
 
 class NewsDialog extends ComponentDialog {
-	constructor(luisRecognizer, userState) {
+	constructor(luisRecognizer, userState, starter) {
 		super(NEWS_DIALOG);
 		
 		this.luisRecognizer = luisRecognizer;
 		this.userProfile = userState;
-		this.starter = new StarterDialog();
 		
 		this.addDialog(new TextPrompt(NEWS_PROMPT));
 		this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
 			this.requestLocation.bind(this),
 			this.captureCoordinates.bind(this),
 			this.returnNews.bind(this),
-			this.starter.showNewsPossibilities.bind(this),
-			this.starter.showDataStep.bind(this)
+			starter.showNewsPossibilities.bind(this),
+			starter.showDataStep.bind(this)
 		]));
 		
 		this.initialDialogId = WATERFALL_DIALOG;
@@ -67,7 +60,6 @@ class NewsDialog extends ComponentDialog {
 	}
 	
 	async returnNews(stepContext) {
-		
 		try {
 			const searchStr = (stepContext.options.newsType !== 'What is the latest news?') ? stepContext.options.newsType : '';
 			const initialMessage = (stepContext.options.newsType === 'What is the latest news?') ? "Here are some results from a search:" : `Here's the latest ${stepContext.options.newsType}:`;

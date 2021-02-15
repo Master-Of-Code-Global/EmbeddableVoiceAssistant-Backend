@@ -1,10 +1,7 @@
 const { ComponentDialog, WaterfallDialog, TextPrompt } = require('botbuilder-dialogs');
-const { InputHints, MessageFactory } = require('botbuilder');
-const { ActivityTypes, ActionTypes,  } = require('botbuilder-core');
+const { ActivityTypes } = require('botbuilder-core');
 const { LuisRecognizer } = require('botbuilder-ai');
 
-const NEWS_DIALOG = 'NEWS_DIALOG';
-const WEATHER_DIALOG = 'WEATHER_DIALOG';
 const JOKE_DIALOG = 'JOKE_DIALOG';
 
 const WATERFALL_DIALOG = 'WATERFALL_DIALOG';
@@ -20,15 +17,16 @@ const jokes = [
 let usedJokes = [];
 
 class JokeDialog extends ComponentDialog {
-	constructor(luisRecognizer) {
+	constructor(luisRecognizer,starter) {
 		super(JOKE_DIALOG);
 		
 		this.luisRecognizer = luisRecognizer;
+		this.starter = starter;
 		
 		this.addDialog(new TextPrompt(JOKE_PROMPT));
 		this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
 			this.returnJokes.bind(this),
-			this.choiceOptionStep.bind(this),
+			starter.showJokePossibilities.bind(this),
 			this.showDataStep.bind(this)
 		]));
 		
@@ -67,34 +65,11 @@ class JokeDialog extends ComponentDialog {
 			if (!usedJokesArr.includes(jokesArr[i])) jokesLeft.push(jokesArr[i]);
 		}
 		
-		for(let i in usedJokesArr) {
+		for (let i in usedJokesArr) {
 			if(!jokesArr.includes(usedJokesArr[i])) jokesLeft.push(usedJokesArr[i]);
 		}
 		
 		return jokesLeft.sort((a, b) => a - b);
-	}
-	
-	async choiceOptionStep(stepContext) {
-		const cardActions = [
-			{
-				type: ActionTypes.ImBack,
-				title: 'Another One',
-				value: 'Another One',
-			},
-			{
-				type: ActionTypes.ImBack,
-				title: 'IT news',
-				value: 'IT news',
-			},
-			{
-				type: ActionTypes.ImBack,
-				title: 'What is the weather tomorrow?',
-				value: 'What is the weather tomorrow?',
-			}
-		];
-		
-		const reply = MessageFactory.suggestedActions(cardActions);
-		return await stepContext.prompt(JOKE_PROMPT, { prompt: reply });
 	}
 	
 	async showDataStep(stepContext){
@@ -103,22 +78,10 @@ class JokeDialog extends ComponentDialog {
 		}
 		
 		const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);
-		switch (LuisRecognizer.topIntent(luisResult)) {
-			case 'NewsUpdate_Request':
-				return await stepContext.beginDialog(NEWS_DIALOG, { newsType: luisResult.text });
-			
-			case 'WeatherForecast_Request':
-			case 'QR_Weather_suggestion_chips':
-				return await stepContext.beginDialog(WEATHER_DIALOG, { weatherRequest: luisResult.entities });
-			
-			case 'TellJoke_Request':
-			case 'QR_Another_joke':
-				return await stepContext.beginDialog(JOKE_DIALOG);
-			
-			default: {
-				const didntUnderstandMessageText = `Sorry, I didn't get that. Please try asking in a different way (intent was ${ stepContext.context.activity.text })`;
-				return await stepContext.context.sendActivity(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
-			}
+		if (LuisRecognizer.topIntent(luisResult) === 'QR_Another_joke') {
+			return await stepContext.beginDialog(JOKE_DIALOG);
+		} else {
+			return this.starter.showDataStep(stepContext);
 		}
 	}
 }

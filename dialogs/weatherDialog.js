@@ -5,7 +5,6 @@ const { LuisRecognizer } = require('botbuilder-ai');
 const { LocationDialog, LOCATION_DIALOG } = require('./locationDialog');
 const moment = require('moment-timezone');
 const { getRequestData } = require('../services/request');
-const { StarterDialog } = require('./starter');
 
 const NEWS_DIALOG = 'NEWS_DIALOG';
 const WEATHER_DIALOG = 'WEATHER_DIALOG';
@@ -61,9 +60,8 @@ const weatherIcons = [
 ];
 
 class WeatherDialog extends ComponentDialog {
-	constructor(luisRecognizer, userState) {
+	constructor(luisRecognizer, userState, starter) {
 		super(WEATHER_DIALOG);
-		// super({dialog: WEATHER_DIALOG, luisRecognizer, userState});
 		
 		this.luisRecognizer = luisRecognizer;
 		this.userProfile = userState;
@@ -73,16 +71,15 @@ class WeatherDialog extends ComponentDialog {
 		this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
 			this.getLocation.bind(this),
 			this.returnWeather.bind(this),
-			this.choiceOptionStep.bind(this),
-			this.showDataStep.bind(this)
+			starter.showPossibilities.bind(this),
+			starter.showDataStep.bind(this)
 		]));
 		
 		this.initialDialogId = WATERFALL_DIALOG;
 	}
 	
 	
-	
-	async getWeatherData(coordinates, stepContext) {
+	async getWeatherData(coordinates) {
 		const url = process.env.CurrentWeatherUrl + coordinates +'&subscription-key=' + process.env.WeatherSubscriptionKey;
 		const options = {
 			fullResponse: false
@@ -122,7 +119,6 @@ class WeatherDialog extends ComponentDialog {
 		const responseData = await getRequestData(url, options);
 		
 		if (responseData.results.length > 0) {
-			// const response = await JSON.parse(responseData.results);
 			return  `${responseData.results[0].position.lat},${responseData.results[0].position.lon}`;
 		} else {
 			return {};
