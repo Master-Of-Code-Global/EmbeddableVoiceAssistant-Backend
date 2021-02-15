@@ -38,11 +38,26 @@ class MainDialog extends ComponentDialog {
 	 */
 	
 	async run(turnContext, accessor, userAccessor) {
+		console.log('');
+		console.log('Debug Run: 1');
+		console.log('');
 		const dialogSet = new DialogSet(accessor);
+		console.log('');
+		console.log('Debug Run: 2');
+		console.log('');
 		dialogSet.add(this);
+		console.log('');
+		console.log('Debug Run: 3');
+		console.log('');
 		
 		const dialogContext = await dialogSet.createContext(turnContext);
+		console.log('');
+		console.log('Debug Run: 4');
+		console.log('');
 		const results = await dialogContext.continueDialog();
+		console.log('');
+		console.log('Debug Run: 5');
+		console.log('');
 		if (results.status === DialogTurnStatus.empty) {
 			await dialogContext.beginDialog(this.id);
 		}
