@@ -69,13 +69,22 @@ class MainDialog extends ComponentDialog {
 		
 		switch (LuisRecognizer.topIntent(luisResult)) {
 			case 'NewsUpdate_Request':
+				console.log('Main Dialog: Start News Dialog');
+				console.log('----------------------------------------------------');
+				console.log('');
 				return await stepContext.beginDialog(NEWS_DIALOG, { newsType: luisResult.text });
 				
 			case 'WeatherForecast_Request':
 			case 'QR_Weather_suggestion_chips':
+				console.log('Main Dialog: Start Weather Dialog');
+				console.log('----------------------------------------------------');
+				console.log('');
 				return await stepContext.beginDialog(WEATHER_DIALOG, { weatherRequest: luisResult.entities });
 			
 			case 'TellJoke_Request':
+				console.log('Main Dialog: Start Joke Dialog');
+				console.log('----------------------------------------------------');
+				console.log('');
 				return await stepContext.beginDialog(JOKE_DIALOG);
 				
 			case 'ST_user_greeting':
