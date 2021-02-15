@@ -36,6 +36,9 @@ class NewsDialog extends ComponentDialog {
 	}
 
 	async requestLocation(stepContext) {
+		console.log('');
+		console.log('News Dialog: Step 1');
+		console.log('');
 		if (this.userProfile.location && this.userProfile.location.countryCode){
 			return await stepContext.next();
 		}
@@ -44,6 +47,9 @@ class NewsDialog extends ComponentDialog {
 	}
 
 	async captureCoordinates(stepContext) {
+		console.log('');
+		console.log('News Dialog: Step 2');
+		console.log('');
 		// temp coordinates '47.591180,-122.332700'
 		const country = stepContext.result;
 		if (country) {
@@ -60,6 +66,9 @@ class NewsDialog extends ComponentDialog {
 	}
 	
 	async returnNews(stepContext) {
+		console.log('');
+		console.log('News Dialog: Step 3');
+		console.log('');
 		try {
 			const searchStr = (stepContext.options.newsType !== 'What is the latest news?') ? stepContext.options.newsType : '';
 			const initialMessage = (stepContext.options.newsType === 'What is the latest news?') ? "Here are some results from a search:" : `Here's the latest ${stepContext.options.newsType}:`;
