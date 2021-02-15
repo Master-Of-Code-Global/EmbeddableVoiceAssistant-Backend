@@ -29,6 +29,11 @@ class DialogBot extends ActivityHandler {
 	
         this.onMessage(async (context, next) => {
             console.log('Running dialog with Message Activity.');
+            console.log(context._activity.from);
+            console.log(`${context._activity.rawTimestamp}, {${context._activity.type}}: ${context._activity.text}`);
+            console.log(`ChannelID: ${context._activity.channelId}`);
+            console.log('----------------------------------------------------------------------');
+            console.log('');
             
             // Run the Dialog with the new message Activity.
             await this.dialog.run(context, this.conversationDataAccessor, this.userProfileAccessor);
