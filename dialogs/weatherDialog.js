@@ -319,66 +319,6 @@ class WeatherDialog extends ComponentDialog {
 		
 		return await stepContext.next();
 	}
-	
-	async choiceOptionStep(stepContext) {
-		const cardActions = [
-			{
-				type: ActionTypes.ImBack,
-				title: 'What about tomorrow?',
-				value: 'What about tomorrow?',
-			},
-			{
-				type: ActionTypes.ImBack,
-				title: 'Last news',
-				value: 'Last news',
-			},
-			{
-				type: ActionTypes.ImBack,
-				title: 'Tell me a joke',
-				value: 'Tell me a joke',
-			}
-		];
-		
-		const reply = MessageFactory.suggestedActions(cardActions);
-
-		return await stepContext.prompt(WEATHER_PROMPT, { prompt: reply });
-	}
-	
-	async showDataStep(stepContext){
-		if (!this.luisRecognizer.isConfigured) {
-			return await stepContext.beginDialog('MainDialog');
-		}
-		
-		const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);
-		
-		console.log('topIntent: ', LuisRecognizer.topIntent(luisResult));
-		
-		switch (LuisRecognizer.topIntent(luisResult)) {
-			case 'NewsUpdate_Request':
-				console.log('Weather Dialog: Start News Dialog');
-				console.log('----------------------------------------------------');
-				console.log('');
-				return await stepContext.beginDialog(NEWS_DIALOG, { newsType: luisResult.text });
-			
-			case 'WeatherForecast_Request':
-			case 'QR_Weather_suggestion_chips':
-				console.log('Weather Dialog: Start Weather Dialog');
-				console.log('----------------------------------------------------');
-				console.log('');
-				return await stepContext.beginDialog(WEATHER_DIALOG, { weatherRequest: luisResult.entities });
-			
-			case 'TellJoke_Request':
-				console.log('Weather Dialog: Start Joke Dialog');
-				console.log('----------------------------------------------------');
-				console.log('');
-				return await stepContext.beginDialog(JOKE_DIALOG);
-			
-			default: {
-				const didntUnderstandMessageText = `Sorry, I didn't get that. Please try asking in a different way (intent was ${ stepContext.context.activity.text })`;
-				return await stepContext.context.sendActivity(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
-			}
-		}
-	}
 }
 
 module.exports.WEATHER_DIALOG = WEATHER_DIALOG;

@@ -17,22 +17,12 @@ class StarterDialog {
 	}
 	
 	async showPossibilities(stepContext){
-		const cardActions = [
-			{
-				type: ActionTypes.ImBack,
-				title: 'What is the weather today?',
-				value: 'What is the weather today?',
-			},
-			{
-				type: ActionTypes.ImBack,
-				title: 'What is the latest news?',
-				value: 'What is the latest news?',
-			},
-			{
-				type: ActionTypes.ImBack,
-				title: 'Tell me a joke',
-				value: 'Tell me a joke',
-			}
+		let cardActions;
+		
+		cardActions = [
+			buttons.weatherToday,
+			buttons.defaultNews,
+			buttons.tellJoke
 		];
 		
 		const reply = MessageFactory.suggestedActions(cardActions, '');
@@ -71,22 +61,12 @@ class StarterDialog {
 	}
 	
 	async showJokePossibilities(stepContext) {
-		const cardActions = [
-			{
-				type: ActionTypes.ImBack,
-				title: 'Another One',
-				value: 'Another One',
-			},
-			{
-				type: ActionTypes.ImBack,
-				title: 'IT news',
-				value: 'IT news',
-			},
-			{
-				type: ActionTypes.ImBack,
-				title: 'What is the weather tomorrow?',
-				value: 'What is the weather tomorrow?',
-			}
+		let cardActions;
+		
+		cardActions = [
+			buttons.anotherJoke,
+			buttons.weatherToday,
+			buttons.defaultNews
 		];
 		
 		const reply = MessageFactory.suggestedActions(cardActions);
