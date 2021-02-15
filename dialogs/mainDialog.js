@@ -57,6 +57,7 @@ class MainDialog extends ComponentDialog {
 		const results = await dialogContext.continueDialog();
 		console.log('');
 		console.log('Debug Run: 5');
+		console.log('Status: ', results);
 		console.log('');
 		if (results.status === DialogTurnStatus.empty) {
 			await dialogContext.beginDialog(this.id);
