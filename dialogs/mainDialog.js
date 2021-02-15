@@ -62,6 +62,10 @@ class MainDialog extends ComponentDialog {
 		console.log(turnContext._respondedRef);
 		console.log('');
 		if (results.status === DialogTurnStatus.empty) {
+			console.log('');
+			console.log('Debug Run: 6');
+			console.log('Run dialog with id: ', this.id);
+			console.log('');
 			await dialogContext.beginDialog(this.id);
 		}
 	}
