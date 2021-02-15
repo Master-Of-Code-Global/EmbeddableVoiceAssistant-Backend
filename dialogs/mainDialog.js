@@ -48,6 +48,7 @@ class MainDialog extends ComponentDialog {
 		dialogSet.add(this);
 		console.log('');
 		console.log('Debug Run: 3');
+		console.log(turnContext._respondedRef);
 		console.log('');
 		
 		const dialogContext = await dialogSet.createContext(turnContext);
@@ -58,6 +59,7 @@ class MainDialog extends ComponentDialog {
 		console.log('');
 		console.log('Debug Run: 5');
 		console.log('Status: ', results);
+		console.log(turnContext._respondedRef);
 		console.log('');
 		if (results.status === DialogTurnStatus.empty) {
 			await dialogContext.beginDialog(this.id);
