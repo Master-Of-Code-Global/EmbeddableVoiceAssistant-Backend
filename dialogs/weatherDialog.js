@@ -104,7 +104,7 @@ class WeatherDialog extends ComponentDialog {
 		if (responseData.forecasts && responseData.forecasts.length > 0) {
 			return responseData.forecasts;
 		} else {
-			await stepContext.context.sendActivity("Unfortunately, the News search service is unavailable at the moment. Please try again later.", null, InputHints.IgnoringInput);
+			await stepContext.context.sendActivity("Unfortunately, the Weather service is unavailable at the moment. Please try again later.", null, InputHints.IgnoringInput);
 			return {};
 		}
 	}
