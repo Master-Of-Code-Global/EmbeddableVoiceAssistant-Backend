@@ -37,7 +37,7 @@ class DialogBot extends ActivityHandler {
             console.log('');
             
             // Run the Dialog with the new message Activity.
-            await this.dialog.run(context, this.conversationDataAccessor, this.userProfileAccessor);
+            await this.dialog.run(context, this.dialogState, this.conversationDataAccessor, this.userProfileAccessor);
 
             // By calling next() you ensure that the next BotHandler is run.
             await next();

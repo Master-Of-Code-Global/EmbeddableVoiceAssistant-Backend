@@ -17,7 +17,7 @@ class DialogAndWelcomeBot extends DialogBot {
 		                'Try asking me something from the options below: \n');
 	                  
 		                await context.sendActivity(reply);
-                    await dialog.run(context, conversationState.createProperty('conversationData'), userState.createProperty('userProfile'));
+                    await dialog.run(context, conversationState.createProperty('DialogState'), conversationState.createProperty('conversationData'), userState.createProperty('userProfile'));
                 }
             }
 
