@@ -29,7 +29,8 @@ class DialogBot extends ActivityHandler {
 	
         this.onMessage(async (context, next) => {
             console.log('Running dialog with Message Activity.');
-            console.log(context._activity.from);
+            console.log("Conversation: ", context.activity.conversation);
+            console.log("From: ", context._activity.from);
             console.log(`${context._activity.rawTimestamp}, {${context._activity.type}}: ${context._activity.text}`);
             console.log(`ChannelID: ${context._activity.channelId}`);
             console.log('----------------------------------------------------------------------');
@@ -42,23 +43,23 @@ class DialogBot extends ActivityHandler {
             await next();
         });
 
-        // this.onDialog(async (context, next) => {
-        //     // Save any state changes. The load happened during the execution of the Dialog.
-        //     await this.conversationState.saveChanges(context, false);
-        //     await this.userState.saveChanges(context, false);
-				//
-        //     // By calling next() you ensure that the next BotHandler is run.
-        //     await next();
-        // });
+        this.onDialog(async (context, next) => {
+            // Save any state changes. The load happened during the execution of the Dialog.
+            await this.conversationState.saveChanges(context, false);
+            await this.userState.saveChanges(context, false);
+				
+            // By calling next() you ensure that the next BotHandler is run.
+            await next();
+        });
     }
 	
-	async run(context) {
-		await super.run(context);
+	// async run(context) {
+	// 	await super.run(context);
 		
-		// Save any state changes. The load happened during the execution of the Dialog.
-		await this.conversationState.saveChanges(context, false);
-		await this.userState.saveChanges(context, false);
-	}
+	// 	// Save any state changes. The load happened during the execution of the Dialog.
+	// 	await this.conversationState.saveChanges(context, false);
+	// 	await this.userState.saveChanges(context, false);
+	// }
 }
 
 module.exports.DialogBot = DialogBot;
