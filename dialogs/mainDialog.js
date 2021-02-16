@@ -73,7 +73,7 @@ class MainDialog extends ComponentDialog {
 			console.log('Debug Run: 6');
 			console.log('Run dialog with id: ', this.id);
 			console.log('');
-			await dialogContext.beginDialog(this.id);
+			await dialogContext.replaceDialog(this.id);
 		}
 	}
 }

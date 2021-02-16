@@ -96,7 +96,7 @@ class WeatherDialog extends ComponentDialog {
 			// const msg = MessageFactory.text(messageText, messageText, InputHints.ExpectingInput);
 			// return await stepContext.prompt(WEATHER_PROMPT, { prompt: msg });
 			
-			return await stepContext.beginDialog(LOCATION_DIALOG);
+			return await stepContext.replaceDialog(LOCATION_DIALOG);
 		}
 	}
 	
@@ -112,7 +112,7 @@ class WeatherDialog extends ComponentDialog {
 				countryCode = this.userProfile.location.countryCode;
 			}
 		} else {
-			return await stepContext.beginDialog(WEATHER_DIALOG);
+			return await stepContext.replaceDialog(WEATHER_DIALOG);
 		}
 		
 		const coordinates = await this.getCoordinates(city, countryCode, stepContext);

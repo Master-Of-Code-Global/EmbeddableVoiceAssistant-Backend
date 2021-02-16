@@ -64,7 +64,7 @@ class LocationDialog extends ComponentDialog {
 		}
 		
 		if (!this.luisRecognizer.isConfigured) {
-			return await stepContext.beginDialog('MainDialog');
+			return await stepContext.replaceDialog('MainDialog');
 		}
 		
 		const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);
@@ -96,11 +96,11 @@ class LocationDialog extends ComponentDialog {
 				return await stepContext.next();
 			} else {
 				await stepContext.prompt(LOCATION_PROMPT, 'Sorry, I didn’t get that. Please try asking in a different way.');
-				return await stepContext.beginDialog('MainDialog');
+				return await stepContext.replaceDialog('MainDialog');
 			}
 		} else {
 			await stepContext.prompt(LOCATION_PROMPT, 'Sorry, I didn’t get that. Please try asking in a different way.');
-			return await stepContext.beginDialog('MainDialog');
+			return await stepContext.replaceDialog('MainDialog');
 		}
 	}
 }
