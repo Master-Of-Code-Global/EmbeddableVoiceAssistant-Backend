@@ -55,9 +55,7 @@ class NewsDialog extends ComponentDialog {
 		if (country) {
 			mkt = countries[country.toLowerCase()];
 			
-			this.userProfile.location = {
-				countryCode: mkt
-			};
+			this.userProfile.location.countryCode = mkt;
 			
 			this.userProfile.saveChanges(stepContext.context);
 		}
@@ -95,7 +93,7 @@ class NewsDialog extends ComponentDialog {
 				if (responseData.body.value.length > 0) {
 					const newsCarousel = buildNewsCarousel(responseData.body.value);
 					
-					await stepContext.context.sendActivity('Here’s what I found:', 'Here’s what I found:', InputHints.IgnoringInput);
+					// await stepContext.context.sendActivity('Here’s what I found:', 'Here’s what I found:', InputHints.IgnoringInput);
 					await stepContext.context.sendActivity(newsCarousel, null, InputHints.IgnoringInput);
 				} else {
 					await stepContext.context.sendActivity(serviceNotResp, null, InputHints.IgnoringInput);

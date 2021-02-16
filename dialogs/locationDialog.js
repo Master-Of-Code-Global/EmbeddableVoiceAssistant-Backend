@@ -39,9 +39,7 @@ class LocationDialog extends ComponentDialog {
 	async saveCountry(stepContext) {
 		const country = stepContext.result;
 		if (country) {
-			this.userProfile.location = {
-				countryCode: countries[country.toLowerCase()]
-			};
+			this.userProfile.location.countryCode = countries[country.toLowerCase()];
 			
 			this.userProfile.saveChanges(stepContext.context);
 		}

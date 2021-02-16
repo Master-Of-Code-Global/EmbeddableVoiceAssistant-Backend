@@ -14,10 +14,12 @@ class MainDialog extends ComponentDialog {
         this.userState = userState;
         this.starter = new StarterDialog(luisRecognizer);
 	
-		    this.userState.location = {
-			    countryCode: undefined,
-			    city: undefined
-		    };
+        if (!this.userState.location) {
+	        this.userState.location = {
+		        countryCode: undefined,
+		        city: undefined
+	        };
+        }
         
         if (!luisRecognizer) throw new Error('[MainDialog]: Missing parameter \'luisRecognizer\' is required');
         this.luisRecognizer = luisRecognizer;
