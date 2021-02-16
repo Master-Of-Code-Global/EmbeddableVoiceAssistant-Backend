@@ -2,8 +2,14 @@ const { ActionTypes } = require("botbuilder");
 
 const weatherToday = {
   type: ActionTypes.ImBack,
-  title: 'What\'s the weather today? ⛅',
+  title: 'What\'s the weather today?',
   value: 'What is the weather today?',
+};
+
+const weatherThisWeek = {
+	type: ActionTypes.ImBack,
+	title: 'Weather for this week',
+	value: 'Weather for this week',
 };
 
 const defaultNews = {
@@ -12,27 +18,33 @@ const defaultNews = {
   value: 'What is the latest news?',
 };
 
+const breakingNews = {
+	type: ActionTypes.ImBack,
+	title: 'Breaking news',
+	value: 'Breaking news',
+};
+
 const tellJoke = {
   type: ActionTypes.ImBack,
-  title: 'Tell me a joke 🙃',
+  title: 'Tell me a joke',
   value: 'Tell me a joke',
 };
 
 const worldNews = {
   type: ActionTypes.ImBack,
-  title: '🌎 World news',
+  title: 'World news',
   value: 'World news'
 };
 
 const aiNews = {
   type: ActionTypes.ImBack,
-  title: 'AI news 💪🏽',
+  title: 'AI news',
   value: 'AI news',
 }
 
 const healthNews = {
   type: ActionTypes.ImBack,
-  title: '🍏 Health news',
+  title: 'Health news',
   value: 'Health news'
 };
 
@@ -50,7 +62,9 @@ const anotherJoke = {
 
 module.exports = {
   weatherToday,
+	weatherThisWeek,
   defaultNews,
+	breakingNews,
   tellJoke,
   worldNews,
   aiNews,

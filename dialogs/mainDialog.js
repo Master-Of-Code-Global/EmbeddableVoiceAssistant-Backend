@@ -13,6 +13,11 @@ class MainDialog extends ComponentDialog {
 
         this.userState = userState;
         this.starter = new StarterDialog(luisRecognizer);
+	
+		    this.userState.location = {
+			    countryCode: undefined,
+			    city: undefined
+		    };
         
         if (!luisRecognizer) throw new Error('[MainDialog]: Missing parameter \'luisRecognizer\' is required');
         this.luisRecognizer = luisRecognizer;
@@ -43,6 +48,7 @@ class MainDialog extends ComponentDialog {
 		
 		const dialogContext = await dialogSet.createContext(turnContext);
 		const results = await dialogContext.continueDialog();
+
 		if (results.status === DialogTurnStatus.empty) {
 			await dialogContext.beginDialog(this.id);
 		}

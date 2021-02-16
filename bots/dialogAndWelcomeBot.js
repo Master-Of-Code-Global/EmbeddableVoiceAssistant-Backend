@@ -12,11 +12,14 @@ class DialogAndWelcomeBot extends DialogBot {
             const membersAdded = context.activity.membersAdded;
             for (let cnt = 0; cnt < membersAdded.length; cnt++) {
                 if (membersAdded[cnt].id !== context.activity.recipient.id) {
-		                const reply = MessageFactory.text('Hi, I’m Ivy, ' +
-			                'a Voice Assistant widget for mobile apps.\n' + '\n' +
-		                'Try asking me something from the options below: \n');
-	                  
-		                await context.sendActivity(reply);
+		                const replyWelcome = MessageFactory.text('Hi, I’m Ivy, a Voice Assistant widget for mobile apps.');
+		                await context.sendActivity(replyWelcome);
+	
+		                const replyMicrophone = MessageFactory.text('Tap the microphone to speak. \n' +
+			                '\n' +
+			                'Here’s something you can ask me:');
+		                await context.sendActivity(replyMicrophone);
+	                
                     await dialog.run(context, conversationState.createProperty('conversationData'), userState.createProperty('userProfile'));
                 }
             }
