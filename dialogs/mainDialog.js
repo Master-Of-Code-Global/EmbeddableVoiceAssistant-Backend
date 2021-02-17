@@ -45,34 +45,22 @@ class MainDialog extends ComponentDialog {
 	 */
 	
 	async run(turnContext, accessor, userAccessor) {
-		console.log('');
-		console.log('Debug Run: 1');
-		console.log('');
+		console.log(`\nDebug Run: 1`);
 		const dialogSet = new DialogSet(accessor);
-		console.log('');
-		console.log('Debug Run: 2');
-		console.log('');
+		console.log(`\nDebug Run: 2`);
 		dialogSet.add(this);
-		console.log('');
-		console.log('Debug Run: 3');
+		console.log(`\nDebug Run: 3`);
 		console.log(turnContext._respondedRef);
-		console.log('');
 		
 		const dialogContext = await dialogSet.createContext(turnContext);
-		console.log('');
-		console.log('Debug Run: 4');
-		console.log('');
+		console.log(`\nDebug Run: 4`);
 		const results = await dialogContext.continueDialog();
-		console.log('');
-		console.log('Debug Run: 5');
+		console.log(`\nDebug Run: 5`);
 		console.log('Status: ', results);
 		console.log(turnContext._respondedRef);
-		console.log('');
 		if (results.status === DialogTurnStatus.empty) {
-			console.log('');
-			console.log('Debug Run: 6');
+			console.log(`\nDebug Run: 6`);
 			console.log('Run dialog with id: ', this.id);
-			console.log('');
 			await dialogContext.replaceDialog(this.id);
 		}
 	}

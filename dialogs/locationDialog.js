@@ -64,6 +64,8 @@ class LocationDialog extends ComponentDialog {
 		}
 		
 		if (!this.luisRecognizer.isConfigured) {
+			console.log(`\n Luis is not configured properly.`);
+			console.log('-------------------------------------------------------');
 			return await stepContext.replaceDialog('MainDialog');
 		}
 		
