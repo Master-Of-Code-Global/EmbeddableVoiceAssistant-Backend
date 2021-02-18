@@ -95,14 +95,17 @@ class LocationDialog extends ComponentDialog {
 				this.userProfile.location.city = city;
 				this.userProfile.saveChanges(stepContext.context);
 				
-				return await stepContext.next();
+				return await stepContext.endDialog();
+				// return await stepContext.next();
 			} else {
 				await stepContext.prompt(LOCATION_PROMPT, 'Sorry, I didn’t get that. Please try asking in a different way.');
 				return await stepContext.replaceDialog('MainDialog');
+				// return await stepContext.replaceDialog('MainDialog');
 			}
 		} else {
 			await stepContext.prompt(LOCATION_PROMPT, 'Sorry, I didn’t get that. Please try asking in a different way.');
 			return await stepContext.replaceDialog('MainDialog');
+			// return await stepContext.replaceDialog('MainDialog');
 		}
 	}
 }
