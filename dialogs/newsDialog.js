@@ -88,7 +88,8 @@ class NewsDialog extends ComponentDialog {
 				console.error(responseData.body.error);
 				await stepContext.context.sendActivity(serviceNotResp, null, InputHints.IgnoringInput);
 				await stepContext.context.sendActivity(checkConnection, null, InputHints.IgnoringInput);
-				return stepContext.beginDialog('MainDialog');
+				return stepContext.replaceDialog('MainDialog');
+				// return stepContext.beginDialog('MainDialog');
 			} else {
 				if (responseData.body.value.length > 0) {
 					const newsCarousel = buildNewsCarousel(responseData.body.value);
@@ -98,7 +99,8 @@ class NewsDialog extends ComponentDialog {
 				} else {
 					await stepContext.context.sendActivity(serviceNotResp, null, InputHints.IgnoringInput);
 					await stepContext.context.sendActivity(checkConnection, null, InputHints.IgnoringInput);
-					return stepContext.beginDialog('MainDialog');
+					return stepContext.replaceDialog('MainDialog');
+					// return stepContext.beginDialog('MainDialog');
 				}
 			}
 

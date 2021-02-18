@@ -74,12 +74,14 @@ class JokeDialog extends ComponentDialog {
 	
 	async showDataStep(stepContext){
 		if (!this.luisRecognizer.isConfigured) {
-			return await stepContext.beginDialog('MainDialog');
+			return await stepContext.replaceDialog('MainDialog');
+			// return await stepContext.beginDialog('MainDialog');
 		}
 		
 		const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);
 		if (LuisRecognizer.topIntent(luisResult) === 'QR_Another_joke') {
-			return await stepContext.beginDialog(JOKE_DIALOG);
+			return await stepContext.replaceDialog(JOKE_DIALOG);
+			// return await stepContext.beginDialog(JOKE_DIALOG);
 		} else {
 			return this.starter.showDataStep(stepContext);
 		}

@@ -88,6 +88,7 @@ class StarterDialog {
 	
 	async showDataStep(stepContext){
 		if (!this.luisRecognizer.isConfigured) {
+			// return await stepContext.replaceDialog('MainDialog');
 			return await stepContext.beginDialog('MainDialog');
 		}
 		
@@ -95,21 +96,26 @@ class StarterDialog {
 		
 		switch (LuisRecognizer.topIntent(luisResult)) {
 			case 'NewsUpdate_Request':
+				// return await stepContext.replaceDialog(NEWS_DIALOG, { newsType: luisResult.text });
 				return await stepContext.beginDialog(NEWS_DIALOG, { newsType: luisResult.text });
 			
 			case 'WeatherForecast_Request':
 			case 'QR_Weather_suggestion_chips':
+				// return await stepContext.replaceDialog(WEATHER_DIALOG, { weatherRequest: luisResult.entities });
 				return await stepContext.beginDialog(WEATHER_DIALOG, { weatherRequest: luisResult.entities });
 			
 			case 'TellJoke_Request':
+				// return await stepContext.replaceDialog(JOKE_DIALOG);
 				return await stepContext.beginDialog(JOKE_DIALOG);
 			
 			case 'ST_user_greeting':
 				await stepContext.context.sendActivity('Hi, Ivy here, how can I help?', 'Hi, Ivy here, how can I help?', InputHints.IgnoringInput);
+				// return stepContext.replaceDialog('MainDialog');
 				return stepContext.beginDialog('MainDialog');
 			
 			case 'ST_What_Your_Name':
 				await stepContext.context.sendActivity('I’m Ivy. Nice to meet you!', 'I’m Ivy. Nice to meet you!', InputHints.IgnoringInput);
+				// return stepContext.replaceDialog('MainDialog');
 				return stepContext.beginDialog('MainDialog');
 			
 			case 'ST_How_are_you':
@@ -117,6 +123,7 @@ class StarterDialog {
 					'I’m good! If you are looking for a laugh, try saying ‘’Tell me a joke’’.',
 					'I’m good! If you are looking for a laugh, try saying ‘’Tell me a joke’’.',
 					InputHints.IgnoringInput);
+				// return stepContext.replaceDialog('MainDialog');
 				return stepContext.beginDialog('MainDialog');
 			
 			case 'ST_Microphone_Check':
