@@ -19,8 +19,8 @@ class DialogBot extends ActivityHandler {
         if (!userState) throw new Error('[DialogBot]: Missing parameter. userState is required');
         if (!dialog) throw new Error('[DialogBot]: Missing parameter. dialog is required');
 	
-	      this.conversationDataAccessor = conversationState.createProperty(CONVERSATION_DATA_PROPERTY);
-	      this.userProfileAccessor = userState.createProperty(USER_PROFILE_PROPERTY);
+        this.conversationDataAccessor = conversationState.createProperty(CONVERSATION_DATA_PROPERTY);
+        this.userProfileAccessor = userState.createProperty(USER_PROFILE_PROPERTY);
 
         this.conversationState = conversationState;
         this.userState = userState;
@@ -33,7 +33,7 @@ class DialogBot extends ActivityHandler {
             console.log("From: ", context._activity.from);
             console.log(`${context._activity.rawTimestamp}, {${context._activity.type}}: ${context._activity.text}`);
             console.log(`ChannelID: ${context._activity.channelId}`);
-            console.log('----------------------------------------------------------------------');
+            console.log('---------------------------------------------------------------------');
             
             // Run the Dialog with the new message Activity.
             await this.dialog.run(context, this.conversationDataAccessor, this.userProfileAccessor);
@@ -42,23 +42,23 @@ class DialogBot extends ActivityHandler {
             await next();
         });
 
-        this.onDialog(async (context, next) => {
-            // Save any state changes. The load happened during the execution of the Dialog.
-            await this.conversationState.saveChanges(context, false);
-            await this.userState.saveChanges(context, false);
+        // this.onDialog(async (context, next) => {
+        //     // Save any state changes. The load happened during the execution of the Dialog.
+        //     await this.conversationState.saveChanges(context, false);
+        //     await this.userState.saveChanges(context, false);
 				
-            // By calling next() you ensure that the next BotHandler is run.
-            await next();
-        });
+        //     // By calling next() you ensure that the next BotHandler is run.
+        //     await next();
+        // });
     }
 	
-	// async run(context) {
-	// 	await super.run(context);
+	async run(context) {
+		await super.run(context);
 		
-	// 	// Save any state changes. The load happened during the execution of the Dialog.
-	// 	await this.conversationState.saveChanges(context, false);
-	// 	await this.userState.saveChanges(context, false);
-	// }
+		// Save any state changes. The load happened during the execution of the Dialog.
+		await this.conversationState.saveChanges(context, false);
+		await this.userState.saveChanges(context, false);
+	}
 }
 
 module.exports.DialogBot = DialogBot;

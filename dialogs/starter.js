@@ -95,6 +95,7 @@ class StarterDialog {
 		
 		const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);
 		
+		console.log(`\nLuis recognized next Dialog as ${LuisRecognizer.topIntent(luisResult)}`);
 		switch (LuisRecognizer.topIntent(luisResult)) {
 			case 'NewsUpdate_Request':
 				// return await stepContext.replaceDialog(NEWS_DIALOG, { newsType: luisResult.text });
