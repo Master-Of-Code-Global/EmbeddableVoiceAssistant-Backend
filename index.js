@@ -15,6 +15,7 @@ const restify = require('restify');
 // Import required bot services.
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
 const { BotFrameworkAdapter, ConversationState, InputHints, MemoryStorage, UserState } = require('botbuilder');
+const { CosmosDbPartitionedStorage } = require('botbuilder-azure');
 
 const { IVYLuisRecognizer } = require('./dialogs/luisRecognizer');
 
@@ -66,9 +67,27 @@ adapter.onTurnError = onTurnErrorHandler;
 // For local development, in-memory storage is used.
 // CAUTION: The Memory Storage used here is for local bot debugging only. When the bot
 // is restarted, anything stored in memory will be gone.
-const memoryStorage = new MemoryStorage();
-const conversationState = new ConversationState(memoryStorage);
-const userState = new UserState(memoryStorage);
+let userState = {};
+let conversationState = {};
+
+if (process.env.NODE_ENV !== 'local') {
+    const cosmosStorage = new CosmosDbPartitionedStorage({
+        cosmosDbEndpoint: process.env.CosmosDbEndpoint,
+        authKey: process.env.CosmosDbAuthKey,
+        databaseId: process.env.CosmosDbDatabaseId,
+        containerId: process.env.CosmosDbContainerId,
+        compatibilityMode: false
+    });
+    conversationState = new ConversationState(cosmosStorage);
+    userState = new UserState(cosmosStorage);
+    console.log(`\nBot uses Cosmos DB storage`);
+} else {
+    const memoryStorage = new MemoryStorage();
+    conversationState = new ConversationState(memoryStorage);
+    userState = new UserState(memoryStorage);
+    console.log(`\nBot uses memory storage`);
+}
+
 
 // If configured, pass in the FlightBookingRecognizer.  (Defining it externally allows it to be mocked for tests)
 const { LuisAppId, LuisAPIKey, LuisAPIHostName } = process.env;
