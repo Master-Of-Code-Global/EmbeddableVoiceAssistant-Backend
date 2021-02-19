@@ -111,8 +111,7 @@ class WeatherDialog extends ComponentDialog {
 			// const msg = MessageFactory.text(messageText, messageText, InputHints.ExpectingInput);
 			// return await stepContext.prompt(WEATHER_PROMPT, { prompt: msg });
 			
-			// return await stepContext.replaceDialog(LOCATION_DIALOG);
-			return await stepContext.replaceDialog(LOCATION_DIALOG);
+			return await stepContext.beginDialog(LOCATION_DIALOG);
 		}
 	}
 	
@@ -160,10 +159,10 @@ class WeatherDialog extends ComponentDialog {
 
 					weatherCard = await this.createCurrentCard(city, weatherCurrentData, weatherQuarterData);
 				} else if (weatherData === tomorrow) {
-					const tomorrowWeather = await this.getWeatherDailyData(coordinates, 1);
-					const weatherQuarterData = await this.getWeatherQuarterData(coordinates, stepContext, 1);
+					const tomorrowWeather = await this.getWeatherDailyData(coordinates, 5);
+					const weatherQuarterData = await this.getWeatherQuarterData(coordinates, stepContext, 5);
 					
-					weatherCard = await this.createTomorrowCard(city, tomorrowWeather, weatherQuarterData);
+					weatherCard = await this.createTomorrowCard(city, tomorrowWeather[1], weatherQuarterData);
 				}
 			}
 		} else {
@@ -180,7 +179,7 @@ class WeatherDialog extends ComponentDialog {
 	}
 	
 	createTomorrowCard(city, tomorrowWeather, weatherQuarterData) {
-		let momentDate = moment(tomorrowWeather[0].date).format("YYYY-MM-DD");
+		let momentDate = moment(tomorrowWeather.date).format("YYYY-MM-DD");
 		
 		return CardFactory.adaptiveCard(
 			{
@@ -198,9 +197,9 @@ class WeatherDialog extends ComponentDialog {
 								"items": [
 									{
 										"type": "Image",
-										"url": process.env.WeatherIconsUrl + weatherIcons[tomorrowWeather[0].day.iconCode] + ".png",
+										"url": process.env.WeatherIconsUrl + weatherIcons[tomorrowWeather.day.iconCode] + ".png",
 										"size": "Medium",
-										"altText": tomorrowWeather[0].day.iconPhrase
+										"altText": tomorrowWeather.day.iconPhrase
 									}
 								],
 								// "height": "Stretch",
@@ -220,14 +219,14 @@ class WeatherDialog extends ComponentDialog {
 									},
 									{
 										"type": "TextBlock",
-										"text": `${tomorrowWeather[0].temperature.minimum.value} °C ... ${tomorrowWeather[0].temperature.maximum.value} °C`,
+										"text": `${tomorrowWeather.temperature.minimum.value} °C ... ${tomorrowWeather.temperature.maximum.value} °C`,
 										"size": "Large",
 										"spacing": "None",
 										"height": "stretch"
 									},
 									{
 										"type": "TextBlock",
-										"text": tomorrowWeather[0].day.shortPhrase,
+										"text": tomorrowWeather.day.shortPhrase,
 										"spacing": "None",
 										"wrap": true,
 										"height": "stretch",
@@ -256,12 +255,12 @@ class WeatherDialog extends ComponentDialog {
 										"type": "Image",
 										"horizontalAlignment": "Center",
 										"size": "Small",
-										"url": process.env.WeatherIconsUrl + weatherIcons[weatherQuarterData[0].iconCode] + ".png",
+										"url": process.env.WeatherIconsUrl + weatherIcons[weatherQuarterData[4].iconCode] + ".png",
 										"altText": "Drizzly weather"
 									},
 									{
 										"type": "TextBlock",
-										"text": weatherQuarterData[0].dewPoint.value + "°",
+										"text": weatherQuarterData[4].dewPoint.value + "°",
 										"size": "Large",
 										"horizontalAlignment": "Center"
 									}
@@ -283,12 +282,12 @@ class WeatherDialog extends ComponentDialog {
 										"type": "Image",
 										"horizontalAlignment": "Center",
 										"size": "Small",
-										"url": process.env.WeatherIconsUrl + weatherIcons[weatherQuarterData[1].iconCode] + ".png",
+										"url": process.env.WeatherIconsUrl + weatherIcons[weatherQuarterData[5].iconCode] + ".png",
 										"altText": "Drizzly weather"
 									},
 									{
 										"type": "TextBlock",
-										"text": weatherQuarterData[1].dewPoint.value + "°",
+										"text": weatherQuarterData[5].dewPoint.value + "°",
 										"size": "Large",
 										"horizontalAlignment": "Center"
 									}
@@ -310,12 +309,12 @@ class WeatherDialog extends ComponentDialog {
 										"type": "Image",
 										"horizontalAlignment": "Center",
 										"size": "Small",
-										"url": process.env.WeatherIconsUrl + weatherIcons[weatherQuarterData[2].iconCode] + ".png",
+										"url": process.env.WeatherIconsUrl + weatherIcons[weatherQuarterData[6].iconCode] + ".png",
 										"altText": "Drizzly weather"
 									},
 									{
 										"type": "TextBlock",
-										"text": weatherQuarterData[2].dewPoint.value + "°",
+										"text": weatherQuarterData[6].dewPoint.value + "°",
 										"size": "Large",
 										"horizontalAlignment": "Center"
 									}
@@ -337,12 +336,12 @@ class WeatherDialog extends ComponentDialog {
 										"type": "Image",
 										"horizontalAlignment": "Center",
 										"size": "Small",
-										"url": process.env.WeatherIconsUrl + weatherIcons[weatherQuarterData[3].iconCode] + ".png",
+										"url": process.env.WeatherIconsUrl + weatherIcons[weatherQuarterData[7].iconCode] + ".png",
 										"altText": "Drizzly weather"
 									},
 									{
 										"type": "TextBlock",
-										"text": weatherQuarterData[3].dewPoint.value + "°",
+										"text": weatherQuarterData[7].dewPoint.value + "°",
 										"size": "Large",
 										"horizontalAlignment": "Center"
 									}
