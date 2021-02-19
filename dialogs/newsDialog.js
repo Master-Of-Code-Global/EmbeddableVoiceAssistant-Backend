@@ -65,7 +65,7 @@ class NewsDialog extends ComponentDialog {
 			const searchStr = (stepContext.options.newsType !== 'What is the latest news?') ? stepContext.options.newsType : '';
 			const initialMessage = (stepContext.options.newsType === 'What is the latest news?') ? "Here are some results from a search:" : `Here's the latest ${stepContext.options.newsType}:`;
 
-			await stepContext.context.sendActivity(initialMessage, null, InputHints.IgnoringInput);
+			await stepContext.context.sendActivity(initialMessage, initialMessage, InputHints.IgnoringInput);
 
 			const options = {
 				qs: {

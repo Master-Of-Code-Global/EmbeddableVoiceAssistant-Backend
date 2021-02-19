@@ -33,7 +33,7 @@ class StarterDialog {
 		let cardActions;
 		
 		cardActions = [
-			buttons.weatherThisWeek,
+			buttons.weatherTomorrow,
 			buttons.breakingNews,
 			buttons.tellJoke
 		];

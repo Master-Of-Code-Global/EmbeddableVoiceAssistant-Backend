@@ -8,10 +8,10 @@ const WATERFALL_DIALOG = 'WATERFALL_DIALOG';
 const JOKE_PROMPT = 'JOKE_PROMPT';
 
 const jokes = [
-	['What do clouds wear under their shorts?', '👖 Thunderpants!'] ,
-	['What do you call a shoe made out of a banana?', 'A slipper 🍌'],
-	['Did you hear about the two antennas that got married?', 'The ceremony was okay, but the reception was great! 📺 💛'],
-	['Why didn’t the melons get married? 💍', 'Because they cantaloupe']
+	['What do clouds wear under their shorts?', 'Thunderpants!'] ,
+	['What do you call a shoe made out of a banana?', 'A slipper'],
+	['Did you hear about the two antennas that got married?', 'The ceremony was okay, but the reception was great!'],
+	['Why didn’t the melons get married?', 'Because they cantaloupe']
 ];
 
 let usedJokes = [];

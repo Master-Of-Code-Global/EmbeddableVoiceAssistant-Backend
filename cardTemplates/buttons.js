@@ -2,8 +2,14 @@ const { ActionTypes } = require("botbuilder");
 
 const weatherToday = {
   type: ActionTypes.ImBack,
-  title: 'What\'s the weather today?',
+  title: 'What is the weather today?',
   value: 'What is the weather today?',
+};
+
+const weatherTomorrow = {
+	type: ActionTypes.ImBack,
+	title: 'What is the weather tomorrow?',
+	value: 'What is the weather tomorrow?',
 };
 
 const weatherThisWeek = {
@@ -62,6 +68,7 @@ const anotherJoke = {
 
 module.exports = {
   weatherToday,
+	weatherTomorrow,
 	weatherThisWeek,
   defaultNews,
 	breakingNews,
