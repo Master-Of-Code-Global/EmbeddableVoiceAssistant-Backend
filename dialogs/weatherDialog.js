@@ -32,6 +32,8 @@ class WeatherDialog extends ComponentDialog {
 	}
 
 	async getWeatherDailyData(coordinates, duration) {
+		console.log(`\ngetWeatherDailyData coordinates`);
+		console.log(coordinates);
 		const url = process.env.DailyWeatherUrl + coordinates + '&duration=' + duration + '&subscription-key=' + process.env.WeatherSubscriptionKey;
 		const options = {
 			fullResponse: false
@@ -39,7 +41,8 @@ class WeatherDialog extends ComponentDialog {
 		const responseData = await getRequestData(url, options);
 
 		console.log('responseData: ', responseData);
-
+		console.log(`\nDaily Forecasts`);
+		console.log(responseData.forecasts);
 		if (responseData.forecasts && responseData.forecasts.length > 0) {
 			return responseData.forecasts;
 		} else {
@@ -64,7 +67,8 @@ class WeatherDialog extends ComponentDialog {
 	}
 
 	async getWeatherQuarterData(coordinates, stepContext, duration) {
-
+		console.log(`\ngetWeatherQuarterData coordinates`);
+		console.log(coordinates);
 		const withDuration = duration ? `&duration=${duration}` : '';
 		const url = process.env.QuarterWeatherUrl + coordinates + '&subscription-key=' + process.env.WeatherSubscriptionKey + withDuration;
 		const options = {
@@ -72,6 +76,8 @@ class WeatherDialog extends ComponentDialog {
 		};
 		const responseData = await getRequestData(url, options);
 
+		console.log(`\ngetWeatherQuarterData forecasts`);
+		console.log(responseData.forecasts);
 		if (responseData.forecasts && responseData.forecasts.length > 0) {
 			return responseData.forecasts;
 		} else {
