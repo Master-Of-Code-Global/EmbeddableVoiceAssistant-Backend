@@ -45,7 +45,7 @@ class WeatherDialog extends ComponentDialog {
 		} else {
 			await stepContext.context.sendActivity("It looks like the Weather service is not responding at the moment.", null, InputHints.IgnoringInput);
 			await stepContext.context.sendActivity("Please check your Internet connection and try again later.", null, InputHints.IgnoringInput);
-			return {};
+			return await stepContext.replaceDialog('MainDialog');
 		}
 	}
 
@@ -77,7 +77,7 @@ class WeatherDialog extends ComponentDialog {
 		} else {
 			await stepContext.context.sendActivity("It looks like the Weather service is not responding at the moment.", null, InputHints.IgnoringInput);
 			await stepContext.context.sendActivity("Please check your Internet connection and try again later.", null, InputHints.IgnoringInput);
-			return {};
+			return await stepContext.replaceDialog('MainDialog');
 		}
 	}
 
