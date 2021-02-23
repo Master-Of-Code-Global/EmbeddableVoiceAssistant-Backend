@@ -17,7 +17,7 @@ class WeatherDialog extends ComponentDialog {
 		super(WEATHER_DIALOG);
 
 		this.luisRecognizer = luisRecognizer;
-		this.userProfile = userState;
+		this.userProfile = userState.createProperty('userProfile');
 
 		this.addDialog(new TextPrompt(WEATHER_PROMPT));
 		this.addDialog(new LocationDialog(this.userProfile, this.luisRecognizer));
@@ -98,13 +98,24 @@ class WeatherDialog extends ComponentDialog {
 	}
 
 	async getLocation(stepContext) {
-		if (this.userProfile.location && this.userProfile.location.city) {
+		let userLocation = await this.userProfile.get(stepContext.context);
+		if (!userLocation || (userLocation && !userLocation.location)) {
+			userLocation = {
+				location: {
+					countryCode: undefined,
+					city: undefined
+				}
+			};
+			this.userProfile.set(stepContext.context, userLocation);
+		}
+
+		if (userLocation.location && userLocation.location.city) {
 			return await stepContext.next();
 		}
 
 		if (stepContext.options.weatherRequest.geographyV2) {
 			const city = stepContext.options.weatherRequest.geographyV2[0].location;
-
+			
 			return stepContext.next({ city });
 		} else {
 			// const messageText = 'Sure, what city is the weather forecast for?';
@@ -119,6 +130,8 @@ class WeatherDialog extends ComponentDialog {
 		// console.log('weatherRequest: ', stepContext.options.weatherRequest);
 		// console.log('weatherRequest datetime: ', stepContext.options.weatherRequest.datetime);
 
+		const userLocation = await this.userProfile.get(stepContext.context);
+
 		let city = undefined;
 		let countryCode = undefined;
 		let weatherCard = {};
@@ -127,10 +140,10 @@ class WeatherDialog extends ComponentDialog {
 
 		if (stepContext.result !== undefined && stepContext.result.city) {
 			city = stepContext.result.city;
-		} else if (this.userProfile.location && this.userProfile.location.city) {
-			city = this.userProfile.location.city;
-			if (this.userProfile.location.countryCode) {
-				countryCode = this.userProfile.location.countryCode;
+		} else if (userLocation.location && userLocation.location.city) {
+			city = userLocation.location.city;
+			if (userLocation.location.countryCode) {
+				countryCode = userLocation.location.countryCode;
 			}
 		} else {
 			// return await stepContext.replaceDialog(WEATHER_DIALOG);

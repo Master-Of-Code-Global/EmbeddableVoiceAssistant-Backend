@@ -29,7 +29,18 @@ class LocationDialog extends ComponentDialog {
 	}
 
 	async requestCountry(stepContext) {
-		if (this.userProfile.location && this.userProfile.location.countryCode) {
+		let userLocation = await this.userProfile.get(stepContext.context);
+		if (!userLocation || (userLocation && !userLocation.location)) {
+			userLocation = {
+				location: {
+					countryCode: undefined,
+					city: undefined
+				}
+			};
+			this.userProfile.set(stepContext.context, userLocation);
+		}
+
+		if (userLocation.location && userLocation.location.countryCode) {
 			return await stepContext.next();
 		}
 
@@ -39,16 +50,25 @@ class LocationDialog extends ComponentDialog {
 	async saveCountry(stepContext) {
 		const country = stepContext.result;
 		if (country) {
-			this.userProfile.location.countryCode = countries[country.toLowerCase()];
-
-			this.userProfile.saveChanges(stepContext.context);
+			const userLocation = await this.userProfile.get(stepContext.context);
+			userLocation.location.countryCode = countries[country.toLowerCase()];
 		}
 
 		return await stepContext.next();
 	}
 
 	async requestCity(stepContext) {
-		if (this.userProfile.location && this.userProfile.location.city) {
+		let userLocation = await this.userProfile.get(stepContext.context);
+		if (!userLocation || (userLocation && !userLocation.location)) {
+			userLocation = {
+				location: {
+					countryCode: undefined,
+					city: undefined
+				}
+			};
+			this.userProfile.set(stepContext.context, userLocation);
+		}
+		if (userLocation.location && userLocation.location.city) {
 			return await stepContext.next();
 		}
 
@@ -59,7 +79,8 @@ class LocationDialog extends ComponentDialog {
 	}
 
 	async checkCity(stepContext) {
-		if (this.userProfile.location && this.userProfile.location.city) {
+		const userLocation = await this.userProfile.get(stepContext.context);
+		if (userLocation.location && userLocation.location.city) {
 			return await stepContext.next();
 		}
 
@@ -82,7 +103,8 @@ class LocationDialog extends ComponentDialog {
 	}
 
 	async saveCity(stepContext) {
-		if (this.userProfile.location && this.userProfile.location.city) {
+		const userLocation = await this.userProfile.get(stepContext.context);
+		if (userLocation.location && userLocation.location.city) {
 			return await stepContext.next();
 		}
 
@@ -92,8 +114,7 @@ class LocationDialog extends ComponentDialog {
 			const city = luisResult.entities.geographyV2[0].location;
 
 			if (city) {
-				this.userProfile.location.city = city;
-				this.userProfile.saveChanges(stepContext.context);
+				userLocation.location.city = city;
 
 				return await stepContext.endDialog();
 				// return await stepContext.next();

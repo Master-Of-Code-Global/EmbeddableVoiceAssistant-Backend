@@ -21,7 +21,7 @@ class NewsDialog extends ComponentDialog {
 		super(NEWS_DIALOG);
 
 		this.luisRecognizer = luisRecognizer;
-		this.userProfile = userState;
+		this.userProfile = userState.createProperty('userProfile');
 
 		this.addDialog(new TextPrompt(NEWS_PROMPT));
 		this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
@@ -36,7 +36,17 @@ class NewsDialog extends ComponentDialog {
 	}
 
 	async requestLocation(stepContext) {
-		if (this.userProfile.location && this.userProfile.location.countryCode) {
+		let userLocation = await this.userProfile.get(stepContext.context);
+		if (!userLocation || (userLocation && !userLocation.location)) {
+			userLocation = {
+				location: {
+					countryCode: undefined,
+					city: undefined
+				}
+			};
+			this.userProfile.set(stepContext.context, userLocation);
+		}
+		if (userLocation.location && userLocation.location.countryCode) {
 			return await stepContext.next();
 		}
 
@@ -44,13 +54,12 @@ class NewsDialog extends ComponentDialog {
 	}
 
 	async captureCoordinates(stepContext) {
+		const userLocation = await this.userProfile.get(stepContext.context);
 		const country = stepContext.result;
 		if (country) {
 			mkt = countries[country.toLowerCase()];
 
-			this.userProfile.location.countryCode = mkt;
-
-			this.userProfile.saveChanges(stepContext.context);
+			userLocation.location.countryCode = mkt;
 		}
 
 		return await stepContext.next();
