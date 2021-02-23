@@ -44,7 +44,7 @@ class LocationDialog extends ComponentDialog {
 			return await stepContext.next();
 		}
 
-		return await stepContext.prompt(LOCATION_PROMPT, 'Please share your Country.');
+		return await stepContext.prompt(LOCATION_PROMPT, 'Sure, searching for news. What country are you from?');
 	}
 
 	async saveCountry(stepContext) {

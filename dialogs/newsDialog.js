@@ -50,7 +50,7 @@ class NewsDialog extends ComponentDialog {
 			return await stepContext.next();
 		}
 
-		return await stepContext.prompt(NEWS_PROMPT, 'Please share your Country.');
+		return await stepContext.prompt(NEWS_PROMPT, 'Sure, searching for news. What country are you from?');
 	}
 
 	async captureCoordinates(stepContext) {
