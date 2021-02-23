@@ -236,7 +236,7 @@ class WeatherDialog extends ComponentDialog {
 									},
 									{
 										"type": "TextBlock",
-										"text": `${tomorrowWeather.temperature.minimum.value} °C ... ${tomorrowWeather.temperature.maximum.value} °C`,
+										"text": `${Math.round(tomorrowWeather.temperature.minimum.value)} °C ... ${Math.round(tomorrowWeather.temperature.maximum.value)} °C`,
 										"size": "Large",
 										"spacing": "None",
 										"height": "stretch"
@@ -277,7 +277,7 @@ class WeatherDialog extends ComponentDialog {
 									},
 									{
 										"type": "TextBlock",
-										"text": weatherQuarterData[4].dewPoint.value + "°",
+										"text": Math.round(weatherQuarterData[4].dewPoint.value) + "°",
 										"size": "Large",
 										"horizontalAlignment": "Center"
 									}
@@ -304,7 +304,7 @@ class WeatherDialog extends ComponentDialog {
 									},
 									{
 										"type": "TextBlock",
-										"text": weatherQuarterData[5].dewPoint.value + "°",
+										"text": Math.round(weatherQuarterData[5].dewPoint.value) + "°",
 										"size": "Large",
 										"horizontalAlignment": "Center"
 									}
@@ -331,7 +331,7 @@ class WeatherDialog extends ComponentDialog {
 									},
 									{
 										"type": "TextBlock",
-										"text": weatherQuarterData[6].dewPoint.value + "°",
+										"text": Math.round(weatherQuarterData[6].dewPoint.value) + "°",
 										"size": "Large",
 										"horizontalAlignment": "Center"
 									}
@@ -358,7 +358,7 @@ class WeatherDialog extends ComponentDialog {
 									},
 									{
 										"type": "TextBlock",
-										"text": weatherQuarterData[7].dewPoint.value + "°",
+										"text": Math.round(weatherQuarterData[7].dewPoint.value) + "°",
 										"size": "Large",
 										"horizontalAlignment": "Center"
 									}
@@ -413,7 +413,7 @@ class WeatherDialog extends ComponentDialog {
 									},
 									{
 										"type": "TextBlock",
-										"text": `${dailyWeather[0].temperature.value}` + "°C",
+										"text": `${Math.round(dailyWeather[0].temperature.value)}` + "°C",
 										"size": "Large",
 										"height": "stretch"
 									},
@@ -453,7 +453,7 @@ class WeatherDialog extends ComponentDialog {
 									},
 									{
 										"type": "TextBlock",
-										"text": dailyWeather[1].dewPoint.value + "°",
+										"text": Math.round(dailyWeather[1].dewPoint.value) + "°",
 										"size": "Large",
 										"horizontalAlignment": "Center"
 									}
@@ -480,7 +480,7 @@ class WeatherDialog extends ComponentDialog {
 									},
 									{
 										"type": "TextBlock",
-										"text": dailyWeather[2].dewPoint.value + "°",
+										"text": Math.round(dailyWeather[2].dewPoint.value) + "°",
 										"size": "Large",
 										"horizontalAlignment": "Center"
 									}
@@ -507,7 +507,7 @@ class WeatherDialog extends ComponentDialog {
 									},
 									{
 										"type": "TextBlock",
-										"text": dailyWeather[3].dewPoint.value + "°",
+										"text": Math.round(dailyWeather[3].dewPoint.value) + "°",
 										"size": "Large",
 										"horizontalAlignment": "Center"
 									}
@@ -534,7 +534,7 @@ class WeatherDialog extends ComponentDialog {
 									},
 									{
 										"type": "TextBlock",
-										"text": dailyWeather[4].dewPoint.value + "°",
+										"text": Math.round(dailyWeather[4].dewPoint.value) + "°",
 										"size": "Large",
 										"horizontalAlignment": "Center"
 									}
@@ -588,7 +588,7 @@ class WeatherDialog extends ComponentDialog {
 									},
 									{
 										"type": "TextBlock",
-										"text": `${weatherCurrentData.temperature.value}` + "°C",
+										"text": `${Math.round(weatherCurrentData.temperature.value)}` + "°C",
 										"size": "Large",
 										"spacing": "None",
 										"height": "stretch"
@@ -629,7 +629,7 @@ class WeatherDialog extends ComponentDialog {
 									},
 									{
 										"type": "TextBlock",
-										"text": weatherQuarterData[0].dewPoint.value + "°",
+										"text": Math.round(weatherQuarterData[0].dewPoint.value) + "°",
 										"size": "Large",
 										"horizontalAlignment": "Center"
 									}
@@ -656,7 +656,7 @@ class WeatherDialog extends ComponentDialog {
 									},
 									{
 										"type": "TextBlock",
-										"text": weatherQuarterData[1].dewPoint.value + "°",
+										"text": Math.round(weatherQuarterData[1].dewPoint.value) + "°",
 										"size": "Large",
 										"horizontalAlignment": "Center"
 									}
@@ -683,7 +683,7 @@ class WeatherDialog extends ComponentDialog {
 									},
 									{
 										"type": "TextBlock",
-										"text": weatherQuarterData[2].dewPoint.value + "°",
+										"text": Math.round(weatherQuarterData[2].dewPoint.value) + "°",
 										"size": "Large",
 										"horizontalAlignment": "Center"
 									}
@@ -710,7 +710,7 @@ class WeatherDialog extends ComponentDialog {
 									},
 									{
 										"type": "TextBlock",
-										"text": weatherQuarterData[3].dewPoint.value + "°",
+										"text": Math.round(weatherQuarterData[3].dewPoint.value) + "°",
 										"size": "Large",
 										"horizontalAlignment": "Center"
 									}
