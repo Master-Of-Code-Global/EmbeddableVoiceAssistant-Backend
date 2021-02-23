@@ -88,14 +88,19 @@ class WeatherDialog extends ComponentDialog {
 	}
 
 	async getCoordinates(city, countryCode) {
+		console.log(`\ngetCoordinates city`);
+		console.log(city);
 		let withCountry = countryCode ? '&countrySet=' + countryCode : '';
 
 		const url = process.env.CoordinatesUrl + city + '&subscription-key=' + process.env.WeatherSubscriptionKey + withCountry;
+		console.log(`\ngetCoordinates url`);
+		console.log(url);
 		const options = {
 			fullResponse: false
 		};
 		const responseData = await getRequestData(url, options);
-
+		console.log(`\ngetCoordinates response data`);
+		console.log(responseData.results);
 		if (responseData.results.length > 0) {
 			return `${responseData.results[0].position.lat},${responseData.results[0].position.lon}`;
 		} else {
