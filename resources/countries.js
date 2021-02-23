@@ -20,7 +20,7 @@ const countries = {
 	malaysia:	'MY',
 	mexico:	'MX',
 	netherlands: 'NL',
-	'mnew zealand': 'NZ',
+	'new zealand': 'NZ',
 	norway:	'NO',
 	"people's republic of china": 'CN',
 	"peoples republic of china": 'CN',

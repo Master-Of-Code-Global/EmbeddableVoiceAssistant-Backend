@@ -13,169 +13,183 @@ const WEATHER_PROMPT = 'WEATHER_PROMPT';
 
 
 class WeatherDialog extends ComponentDialog {
-	constructor(starter) {
+	constructor(luisRecognizer, userState, starter) {
 		super(WEATHER_DIALOG);
-		
-		this.starter = starter;
-		
+
+		this.luisRecognizer = luisRecognizer;
+		this.userProfile = userState.createProperty('userProfile');
+
 		this.addDialog(new TextPrompt(WEATHER_PROMPT));
-		this.addDialog(new LocationDialog(starter));
+		this.addDialog(new LocationDialog(this.userProfile, this.luisRecognizer));
 		this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
 			this.getLocation.bind(this),
 			this.returnWeather.bind(this),
 			starter.showWeatherPossibilities.bind(this),
 			starter.showDataStep.bind(this)
 		]));
-		
+
 		this.initialDialogId = WATERFALL_DIALOG;
 	}
-	
-	async getWeatherDailyData(coordinates, duration, stepContext) {
-		const url = process.env.DailyWeatherUrl + coordinates + '&duration='+ duration +'&subscription-key=' + process.env.WeatherSubscriptionKey;
+
+	async getWeatherDailyData(coordinates, duration) {
+		const url = process.env.DailyWeatherUrl + coordinates + '&duration=' + duration + '&subscription-key=' + process.env.WeatherSubscriptionKey;
 		const options = {
 			fullResponse: false
 		};
 		const responseData = await getRequestData(url, options);
-		
+
+		console.log('responseData: ', responseData);
+
 		if (responseData.forecasts && responseData.forecasts.length > 0) {
 			return responseData.forecasts;
 		} else {
-			console.log('responseData: ', responseData);
-			await stepContext.context.sendActivity("It looks like the Daily Weather service is not responding at the moment.", null, InputHints.IgnoringInput);
+			await stepContext.context.sendActivity("It looks like the Weather service is not responding at the moment.", null, InputHints.IgnoringInput);
 			await stepContext.context.sendActivity("Please check your Internet connection and try again later.", null, InputHints.IgnoringInput);
-			return await stepContext.replaceDialog('MainDialog');
+			return {};
 		}
 	}
-	
+
 	async getWeatherData(coordinates) {
-		const url = process.env.CurrentWeatherUrl + coordinates +'&subscription-key=' + process.env.WeatherSubscriptionKey;
+		const url = process.env.CurrentWeatherUrl + coordinates + '&subscription-key=' + process.env.WeatherSubscriptionKey;
 		const options = {
 			fullResponse: false
 		};
 		const responseData = await getRequestData(url, options);
-		
+
 		if (responseData.results && responseData.results.length > 0) {
 			return responseData.results[0];
 		} else {
 			return {};
 		}
 	}
-	
+
 	async getWeatherQuarterData(coordinates, stepContext, duration) {
-		
+
 		const withDuration = duration ? `&duration=${duration}` : '';
 		const url = process.env.QuarterWeatherUrl + coordinates + '&subscription-key=' + process.env.WeatherSubscriptionKey + withDuration;
 		const options = {
 			fullResponse: false
 		};
 		const responseData = await getRequestData(url, options);
-		
+
 		if (responseData.forecasts && responseData.forecasts.length > 0) {
 			return responseData.forecasts;
 		} else {
-			console.log('getWeatherQuarterData: ', responseData);
-			await stepContext.context.sendActivity("It looks like the Quarter Weather service is not responding at the moment.", null, InputHints.IgnoringInput);
+			await stepContext.context.sendActivity("It looks like the Weather service is not responding at the moment.", null, InputHints.IgnoringInput);
 			await stepContext.context.sendActivity("Please check your Internet connection and try again later.", null, InputHints.IgnoringInput);
-			return await stepContext.replaceDialog('MainDialog');
+			return {};
 		}
 	}
-	
+
 	async getCoordinates(city, countryCode) {
-		let withCountry = countryCode ? '&countrySet='+countryCode : '';
-		
-		const url = process.env.CoordinatesUrl + city +'&subscription-key=' + process.env.WeatherSubscriptionKey + withCountry;
+		let withCountry = countryCode ? '&countrySet=' + countryCode : '';
+
+		const url = process.env.CoordinatesUrl + city + '&subscription-key=' + process.env.WeatherSubscriptionKey + withCountry;
 		const options = {
 			fullResponse: false
 		};
 		const responseData = await getRequestData(url, options);
-		
+
 		if (responseData.results.length > 0) {
-			return  `${responseData.results[0].position.lat},${responseData.results[0].position.lon}`;
+			return `${responseData.results[0].position.lat},${responseData.results[0].position.lon}`;
 		} else {
 			return {};
 		}
 	}
-	
+
 	async getLocation(stepContext) {
+		let userLocation = await this.userProfile.get(stepContext.context);
+		if (!userLocation || (userLocation && !userLocation.location)) {
+			userLocation = {
+				location: {
+					countryCode: undefined,
+					city: undefined
+				}
+			};
+			this.userProfile.set(stepContext.context, userLocation);
+		}
+
 		if (stepContext.options.weatherRequest.geographyV2) {
 			const city = stepContext.options.weatherRequest.geographyV2[0].location;
 			
-			return stepContext.next({city});
+			return stepContext.next({ city });
 		} else {
 			// const messageText = 'Sure, what city is the weather forecast for?';
 			// const msg = MessageFactory.text(messageText, messageText, InputHints.ExpectingInput);
 			// return await stepContext.prompt(WEATHER_PROMPT, { prompt: msg });
-			
+
 			return await stepContext.beginDialog(LOCATION_DIALOG);
 		}
 	}
-	
+
 	async returnWeather(stepContext) {
 		// console.log('weatherRequest: ', stepContext.options.weatherRequest);
 		// console.log('weatherRequest datetime: ', stepContext.options.weatherRequest.datetime);
-		const userProfile = this.starter.userDBState.resource;
+
+		const userLocation = await this.userProfile.get(stepContext.context);
+
 		let city = undefined;
 		let countryCode = undefined;
 		let weatherCard = {};
-		
+
 		// console.log('stepContext.result: ', stepContext.result);
-		
+
 		if (stepContext.result !== undefined && stepContext.result.city) {
 			city = stepContext.result.city;
-		} else if (userProfile.location && userProfile.location.city){
-			city = userProfile.location.city;
-			if (userProfile.location.countryCode) {
-				countryCode = userProfile.location.countryCode;
+		} else if (userLocation.location && userLocation.location.city) {
+			city = userLocation.location.city;
+			if (userLocation.location.countryCode) {
+				countryCode = userLocation.location.countryCode;
 			}
 		} else {
 			// return await stepContext.replaceDialog(WEATHER_DIALOG);
 			return await stepContext.replaceDialog(WEATHER_DIALOG);
 		}
-		
+
 		const coordinates = await this.getCoordinates(city, countryCode, stepContext);
-		
+
 		if (stepContext.options && stepContext.options.weatherRequest && stepContext.options.weatherRequest.datetime) {
 			const datetime = stepContext.options.weatherRequest.datetime[0];
 			if (datetime.type === 'daterange') {
-			// if (datetime.type === 'daterange' && datetime.timex.substr(4, 2) === '-W') {
-			// 	const dailyWeather = await this.getWeatherDailyData(coordinates, 5);
+				// if (datetime.type === 'daterange' && datetime.timex.substr(4, 2) === '-W') {
+				// 	const dailyWeather = await this.getWeatherDailyData(coordinates, 5);
 				// weatherCard = await this.createDailyCard(city, dailyWeather);
-				
+
 				await stepContext.prompt(WEATHER_PROMPT, 'Sorry, I didn’t get that. Please try asking in a different way.');
 				return await stepContext.replaceDialog('MainDialog');
 			} else if (datetime.type === 'date') {
 				let weatherData = moment(datetime.timex[0]).format('YYYY-MM-DD');
 				let today = moment().format('YYYY-MM-DD');
-				let tomorrow = moment().add(1,'days').format('YYYY-MM-DD');
-				
+				let tomorrow = moment().add(1, 'days').format('YYYY-MM-DD');
+
 				if (weatherData === today) {
 					const weatherCurrentData = await this.getWeatherData(coordinates, stepContext);
 					const weatherQuarterData = await this.getWeatherQuarterData(coordinates, stepContext);
 
 					weatherCard = await this.createCurrentCard(city, weatherCurrentData, weatherQuarterData);
 				} else if (weatherData === tomorrow) {
-					const tomorrowWeather = await this.getWeatherDailyData(coordinates, 5, stepContext);
+					const tomorrowWeather = await this.getWeatherDailyData(coordinates, 5);
 					const weatherQuarterData = await this.getWeatherQuarterData(coordinates, stepContext, 5);
-					
+
 					weatherCard = await this.createTomorrowCard(city, tomorrowWeather[1], weatherQuarterData);
 				}
 			}
 		} else {
 			const weatherCurrentData = await this.getWeatherData(coordinates);
 			const weatherQuarterData = await this.getWeatherQuarterData(coordinates, stepContext, undefined);
-			
+
 			weatherCard = await this.createCurrentCard(city, weatherCurrentData, weatherQuarterData);
 		}
-		
+
 		await stepContext.context.sendActivity('Okay, here’s the weather you can expect:', 'Okay, here’s the weather you can expect:', InputHints.IgnoringInput);
 		await stepContext.context.sendActivity({ attachments: [weatherCard] });
-		
+
 		return await stepContext.next();
 	}
-	
+
 	createTomorrowCard(city, tomorrowWeather, weatherQuarterData) {
 		let momentDate = moment(tomorrowWeather.date).format("YYYY-MM-DD");
-		
+
 		return CardFactory.adaptiveCard(
 			{
 				"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
@@ -349,10 +363,10 @@ class WeatherDialog extends ComponentDialog {
 			}
 		);
 	}
-	
+
 	async createDailyCard(city, dailyWeather) {
 		let momentDate = moment(dailyWeather.dateTime);
-		
+
 		return CardFactory.adaptiveCard(
 			{
 				"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
@@ -525,7 +539,7 @@ class WeatherDialog extends ComponentDialog {
 			}
 		);
 	}
-	
+
 	async createCurrentCard(city, weatherCurrentData, weatherQuarterData) {
 		let momentDate = moment(weatherCurrentData.dateTime);
 		return CardFactory.adaptiveCard(
