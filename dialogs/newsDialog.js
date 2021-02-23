@@ -17,11 +17,10 @@ const newsHeader = {
 let mkt = '';
 
 class NewsDialog extends ComponentDialog {
-	constructor(luisRecognizer, userState, starter) {
+	constructor(starter) {
 		super(NEWS_DIALOG);
 		
-		this.luisRecognizer = luisRecognizer;
-		this.userProfile = userState;
+		this.starter = starter;
 		
 		this.addDialog(new TextPrompt(NEWS_PROMPT));
 		this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
@@ -36,8 +35,9 @@ class NewsDialog extends ComponentDialog {
 	}
 
 	async requestLocation(stepContext) {
-		console.log(`\nNews Dialog: Step 1`);
-		if (this.userProfile.location && this.userProfile.location.countryCode){
+		// console.log('this.userProfile NEWS: ', this.userProfile);
+		// console.log(`\nNews Dialog: Step 1`);
+		if (this.starter.userDBState.resource.location && this.starter.userDBState.resource.location.countryCode){
 			return await stepContext.next();
 		}
 		
@@ -45,22 +45,22 @@ class NewsDialog extends ComponentDialog {
 	}
 
 	async captureCoordinates(stepContext) {
-		console.log(`\nNews Dialog: Step 2`);
+		// console.log(`\nNews Dialog: Step 2`);
 		// temp coordinates '47.591180,-122.332700'
 		const country = stepContext.result;
 		if (country) {
 			mkt = countries[country.toLowerCase()];
+			await this.starter.updateUserCountry(mkt)
 			
-			this.userProfile.location.countryCode = mkt;
-			
-			this.userProfile.saveChanges(stepContext.context);
+			// this.userProfile.location.countryCode = mkt;
+			// this.userProfile.saveChanges(stepContext.context);
 		}
 
 		return await stepContext.next();
 	}
 	
 	async returnNews(stepContext) {
-		console.log(`\nNews Dialog: Step 3`);
+		// console.log(`\nNews Dialog: Step 3`);
 		try {
 			const searchStr = (stepContext.options.newsType !== 'What is the latest news?') ? stepContext.options.newsType : '';
 			const initialMessage = (stepContext.options.newsType === 'What is the latest news?') ? "Here are some results from a search:" : `Here's the latest ${stepContext.options.newsType}:`;

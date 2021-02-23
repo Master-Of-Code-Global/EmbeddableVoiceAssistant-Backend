@@ -17,10 +17,9 @@ const jokes = [
 let usedJokes = [];
 
 class JokeDialog extends ComponentDialog {
-	constructor(luisRecognizer,starter) {
+	constructor(starter) {
 		super(JOKE_DIALOG);
 		
-		this.luisRecognizer = luisRecognizer;
 		this.starter = starter;
 		
 		this.addDialog(new TextPrompt(JOKE_PROMPT));
@@ -73,13 +72,13 @@ class JokeDialog extends ComponentDialog {
 	}
 	
 	async showDataStep(stepContext){
-		if (!this.luisRecognizer.isConfigured) {
+		if (!this.starter.luisRecognizer.isConfigured) {
 			console.log(`\n Luis is not configured properly.`);
 			console.log('-------------------------------------------------------');
 			return await stepContext.replaceDialog('MainDialog');
 		}
 		
-		const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);
+		const luisResult = await this.starter.luisRecognizer.executeLuisQuery(stepContext.context);
 		if (LuisRecognizer.topIntent(luisResult) === 'QR_Another_joke') {
 			return await stepContext.replaceDialog(JOKE_DIALOG);
 			// return await stepContext.replaceDialog(JOKE_DIALOG);

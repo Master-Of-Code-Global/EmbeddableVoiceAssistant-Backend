@@ -13,14 +13,13 @@ const WEATHER_PROMPT = 'WEATHER_PROMPT';
 
 
 class WeatherDialog extends ComponentDialog {
-	constructor(luisRecognizer, userState, starter) {
+	constructor(starter) {
 		super(WEATHER_DIALOG);
 		
-		this.luisRecognizer = luisRecognizer;
-		this.userProfile = userState;
+		this.starter = starter;
 		
 		this.addDialog(new TextPrompt(WEATHER_PROMPT));
-		this.addDialog(new LocationDialog(this.userProfile, this.luisRecognizer));
+		this.addDialog(new LocationDialog(starter));
 		this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
 			this.getLocation.bind(this),
 			this.returnWeather.bind(this),
@@ -31,21 +30,20 @@ class WeatherDialog extends ComponentDialog {
 		this.initialDialogId = WATERFALL_DIALOG;
 	}
 	
-	async getWeatherDailyData(coordinates, duration) {
+	async getWeatherDailyData(coordinates, duration, stepContext) {
 		const url = process.env.DailyWeatherUrl + coordinates + '&duration='+ duration +'&subscription-key=' + process.env.WeatherSubscriptionKey;
 		const options = {
 			fullResponse: false
 		};
 		const responseData = await getRequestData(url, options);
 		
-		console.log('responseData: ', responseData);
-		
 		if (responseData.forecasts && responseData.forecasts.length > 0) {
 			return responseData.forecasts;
 		} else {
-			await stepContext.context.sendActivity("It looks like the Weather service is not responding at the moment.", null, InputHints.IgnoringInput);
+			console.log('responseData: ', responseData);
+			await stepContext.context.sendActivity("It looks like the Daily Weather service is not responding at the moment.", null, InputHints.IgnoringInput);
 			await stepContext.context.sendActivity("Please check your Internet connection and try again later.", null, InputHints.IgnoringInput);
-			return {};
+			return await stepContext.replaceDialog('MainDialog');
 		}
 	}
 	
@@ -75,9 +73,10 @@ class WeatherDialog extends ComponentDialog {
 		if (responseData.forecasts && responseData.forecasts.length > 0) {
 			return responseData.forecasts;
 		} else {
-			await stepContext.context.sendActivity("It looks like the Weather service is not responding at the moment.", null, InputHints.IgnoringInput);
+			console.log('getWeatherQuarterData: ', responseData);
+			await stepContext.context.sendActivity("It looks like the Quarter Weather service is not responding at the moment.", null, InputHints.IgnoringInput);
 			await stepContext.context.sendActivity("Please check your Internet connection and try again later.", null, InputHints.IgnoringInput);
-			return {};
+			return await stepContext.replaceDialog('MainDialog');
 		}
 	}
 	
@@ -98,10 +97,6 @@ class WeatherDialog extends ComponentDialog {
 	}
 	
 	async getLocation(stepContext) {
-		if (this.userProfile.location && this.userProfile.location.city){
-			return await stepContext.next();
-		}
-		
 		if (stepContext.options.weatherRequest.geographyV2) {
 			const city = stepContext.options.weatherRequest.geographyV2[0].location;
 			
@@ -118,7 +113,7 @@ class WeatherDialog extends ComponentDialog {
 	async returnWeather(stepContext) {
 		// console.log('weatherRequest: ', stepContext.options.weatherRequest);
 		// console.log('weatherRequest datetime: ', stepContext.options.weatherRequest.datetime);
-		
+		const userProfile = this.starter.userDBState.resource;
 		let city = undefined;
 		let countryCode = undefined;
 		let weatherCard = {};
@@ -127,10 +122,10 @@ class WeatherDialog extends ComponentDialog {
 		
 		if (stepContext.result !== undefined && stepContext.result.city) {
 			city = stepContext.result.city;
-		} else if (this.userProfile.location && this.userProfile.location.city){
-			city = this.userProfile.location.city;
-			if (this.userProfile.location.countryCode) {
-				countryCode = this.userProfile.location.countryCode;
+		} else if (userProfile.location && userProfile.location.city){
+			city = userProfile.location.city;
+			if (userProfile.location.countryCode) {
+				countryCode = userProfile.location.countryCode;
 			}
 		} else {
 			// return await stepContext.replaceDialog(WEATHER_DIALOG);
@@ -159,7 +154,7 @@ class WeatherDialog extends ComponentDialog {
 
 					weatherCard = await this.createCurrentCard(city, weatherCurrentData, weatherQuarterData);
 				} else if (weatherData === tomorrow) {
-					const tomorrowWeather = await this.getWeatherDailyData(coordinates, 5);
+					const tomorrowWeather = await this.getWeatherDailyData(coordinates, 5, stepContext);
 					const weatherQuarterData = await this.getWeatherQuarterData(coordinates, stepContext, 5);
 					
 					weatherCard = await this.createTomorrowCard(city, tomorrowWeather[1], weatherQuarterData);

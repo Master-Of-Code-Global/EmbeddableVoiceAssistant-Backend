@@ -17,11 +17,10 @@ const restify = require('restify');
 const { BotFrameworkAdapter, ConversationState, InputHints, MemoryStorage, UserState } = require('botbuilder');
 const { CosmosDbPartitionedStorage } = require('botbuilder-azure');
 
-const { IVYLuisRecognizer } = require('./dialogs/luisRecognizer');
-
 // This bot's main dialog.
 const { DialogAndWelcomeBot } = require('./bots/dialogAndWelcomeBot');
 const { MainDialog } = require('./dialogs/mainDialog');
+const { StarterDialog } = require('./dialogs/starter');
 
 // the bot's booking dialog
 // const { BookingDialog } = require('./dialogs/bookingDialog');
@@ -88,18 +87,13 @@ if (process.env.NODE_ENV !== 'local') {
     console.log(`\nBot uses memory storage`);
 }
 
-
-// If configured, pass in the FlightBookingRecognizer.  (Defining it externally allows it to be mocked for tests)
-const { LuisAppId, LuisAPIKey, LuisAPIHostName } = process.env;
-const luisConfig = { applicationId: LuisAppId, endpointKey: LuisAPIKey, endpoint: `https://${ LuisAPIHostName }` };
-
-const luisRecognizer = new IVYLuisRecognizer(luisConfig);
+const starter = new StarterDialog();
 
 // Create the main dialog.
 // const bookingDialog = new BookingDialog(BOOKING_DIALOG);
-const dialog = new MainDialog(luisRecognizer, userState);
+const dialog = new MainDialog(starter);
 // const dialog = new MainDialog(luisRecognizer, bookingDialog);
-const bot = new DialogAndWelcomeBot(conversationState, userState, dialog);
+const bot = new DialogAndWelcomeBot(conversationState, userState, dialog, starter);
 
 // Create HTTP server
 const server = restify.createServer();

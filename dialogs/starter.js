@@ -5,15 +5,78 @@ const { NEWS_DIALOG } = require('./newsDialog');
 const { JOKE_DIALOG } = require('./jokeDialog');
 const { WEATHER_DIALOG } = require('./weatherDialog');
 const buttons = require('../cardTemplates/buttons');
+const CosmosClient = require("@azure/cosmos").CosmosClient;
+const { IVYLuisRecognizer } = require('./luisRecognizer');
 
 const OPTIONS_PROMPT = 'optionsPrompt';
 const NEWS_PROMPT = 'NEWS_PROMPT';
 const JOKE_PROMPT = 'JOKE_PROMPT';
 
+const client = new CosmosClient({
+	endpoint: process.env.CosmosDbEndpoint,
+	key: process.env.CosmosDbAuthKey
+});
+
+const database = client.database(process.env.CosmosDbDatabaseId);
+const container = database.container(process.env.CosmosDbContainerId);
+
+const { LuisAppId, LuisAPIKey, LuisAPIHostName } = process.env;
+const luisConfig = { applicationId: LuisAppId, endpointKey: LuisAPIKey, endpoint: `https://${ LuisAPIHostName }` };
+
+const luisRecognizer = new IVYLuisRecognizer(luisConfig);
+
 class StarterDialog {
-	
-	constructor(luisRecognizer) {
+	constructor() {
 		this.luisRecognizer = luisRecognizer;
+		this.userDBState = undefined;
+	}
+	
+	async getUserState(userId) {
+		if (!this.userDBState) {
+			const querySpec = {
+				  query: `SELECT * from c WHERE c.userId = "${userId}"`
+				};
+
+				const users = await container.items
+				.query(querySpec)
+				.fetchAll();
+
+				if (!users[0]) {
+				  const newItem = {
+				    userId: userId,
+				    location: {
+				      city: '',
+				      countryCode: ''
+				    }
+				  }
+					
+					this.userDBState = await container.items.create(newItem);
+				} else {
+					this.userDBState = users[0];
+				}
+		}
+		
+		return this.userDBState;
+	}
+	
+	async updateUserCity(city) {
+		this.userDBState.resource.location.city = city;
+		
+		await container
+		.item(this.userDBState.item.id, this.userDBState.item.partitionKey)
+		.replace(this.userDBState.resource);
+
+		console.log('updatedItem: ', this.userDBState);
+	}
+	
+	async updateUserCountry(countryCode) {
+		this.userDBState.resource.location.countryCode = countryCode;
+		
+		await container
+		.item(this.userDBState.item.id, this.userDBState.item.partitionKey)
+		.replace(this.userDBState.resource);
+		
+		console.log('updatedItem: ', this.userDBState);
 	}
 	
 	async showPossibilities(stepContext){
@@ -87,15 +150,15 @@ class StarterDialog {
 	}
 	
 	async showDataStep(stepContext){
-		if (!this.luisRecognizer.isConfigured) {
+		if (!luisRecognizer.isConfigured) {
 			console.log(`\n Luis is not configured properly.`);
 			console.log('-------------------------------------------------------');
 			return await stepContext.replaceDialog('MainDialog');
 		}
 		
-		const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);
+		const luisResult = await luisRecognizer.executeLuisQuery(stepContext.context);
 		
-		console.log(`\nLuis recognized next Dialog as ${LuisRecognizer.topIntent(luisResult)}`);
+		// console.log(`\nLuis recognized next Dialog as ${LuisRecognizer.topIntent(luisResult)}`);
 		switch (LuisRecognizer.topIntent(luisResult)) {
 			case 'NewsUpdate_Request':
 				// return await stepContext.replaceDialog(NEWS_DIALOG, { newsType: luisResult.text });

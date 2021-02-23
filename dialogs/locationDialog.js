@@ -1,20 +1,16 @@
 const { ComponentDialog, WaterfallDialog, TextPrompt } = require('botbuilder-dialogs');
 const { countries } = require('../resources/countries');
-const { LuisRecognizer } = require('botbuilder-ai');
 const { InputHints, MessageFactory } = require('botbuilder');
 
 const LOCATION_DIALOG = 'LOCATION_DIALOG';
 const LOCATION_PROMPT = 'LOCATION_PROMPT';
 const WATERFALL_DIALOG = 'WATERFALL_DIALOG';
 
-let asked = false;
-
 class LocationDialog extends ComponentDialog {
-	constructor(userState, luisRecognizer) {
+	constructor(starter) {
 		super(LOCATION_DIALOG);
 		
-		this.userProfile = userState;
-		this.luisRecognizer = luisRecognizer;
+		this.starter = starter;
 		
 		this.addDialog(new TextPrompt(LOCATION_PROMPT));
 		this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
@@ -48,7 +44,7 @@ class LocationDialog extends ComponentDialog {
 	}
 	
 	async requestCity(stepContext) {
-		if (this.userProfile.location && this.userProfile.location.city){
+		if (this.starter.userDBState.resource.location && this.starter.userDBState.resource.location.city){
 			return await stepContext.next();
 		}
 		
@@ -59,17 +55,17 @@ class LocationDialog extends ComponentDialog {
 	}
 	
 	async checkCity(stepContext) {
-		if (this.userProfile.location && this.userProfile.location.city){
+		if (this.starter.userDBState.resource.location && this.starter.userDBState.resource.location.city){
 			return await stepContext.next();
 		}
 		
-		if (!this.luisRecognizer.isConfigured) {
+		if (!this.starter.luisRecognizer.isConfigured) {
 			console.log(`\n Luis is not configured properly.`);
 			console.log('-------------------------------------------------------');
 			return await stepContext.replaceDialog('MainDialog');
 		}
 		
-		const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);
+		const luisResult = await this.starter.luisRecognizer.executeLuisQuery(stepContext.context);
 		
 		if (luisResult.entities && luisResult.entities.geographyV2) {
 			return await stepContext.next();
@@ -82,18 +78,20 @@ class LocationDialog extends ComponentDialog {
 	}
 	
 	async saveCity(stepContext) {
-		if (this.userProfile.location && this.userProfile.location.city){
+		if (this.starter.userDBState.resource.location && this.starter.userDBState.resource.location.city){
 			return await stepContext.next();
 		}
 		
-		const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);
+		const luisResult = await this.starter.luisRecognizer.executeLuisQuery(stepContext.context);
 		
 		if (luisResult.entities && luisResult.entities.geographyV2) {
 			const city = luisResult.entities.geographyV2[0].location;
 			
 			if (city) {
-				this.userProfile.location.city = city;
-				this.userProfile.saveChanges(stepContext.context);
+				// this.userProfile.location.city = city;
+				// this.userProfile.saveChanges(stepContext.context);
+				
+				await this.starter.updateUserCity(city);
 				
 				return await stepContext.endDialog();
 				// return await stepContext.next();

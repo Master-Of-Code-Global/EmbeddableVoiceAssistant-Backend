@@ -5,13 +5,13 @@ const { MessageFactory } = require('botbuilder');
 const { DialogBot } = require('./dialogBot');
 
 class DialogAndWelcomeBot extends DialogBot {
-    constructor(conversationState, userState, dialog) {
+    constructor(conversationState, userState, dialog, starter) {
         super(conversationState, userState, dialog);
 
         console.log('DialogAndWelcomeBot constr');
         
         this.onMembersAdded(async (context, next) => {
-            const membersAdded = context.activity.membersAdded;
+	        const membersAdded = context.activity.membersAdded;
 	        console.log('BOT context.activity.membersAdded', membersAdded);
 	        console.log('BOT context.activity.recipient', context.activity.recipient.id);
 	        for (let cnt = 0; cnt < membersAdded.length; cnt++) {
@@ -28,6 +28,8 @@ class DialogAndWelcomeBot extends DialogBot {
 		                await context.sendActivity(replyMicrophone);
 	                
                     await dialog.run(context, conversationState.createProperty('conversationData'), userState.createProperty('userProfile'));
+                } else {
+	                await starter.getUserState(membersAdded[cnt].id);
                 }
             }
 
