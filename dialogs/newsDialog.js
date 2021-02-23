@@ -17,11 +17,12 @@ const newsHeader = {
 let mkt = '';
 
 class NewsDialog extends ComponentDialog {
-	constructor(starter) {
+	constructor(luisRecognizer, userState, starter) {
 		super(NEWS_DIALOG);
-		
-		this.starter = starter;
-		
+
+		this.luisRecognizer = luisRecognizer;
+		this.userProfile = userState;
+
 		this.addDialog(new TextPrompt(NEWS_PROMPT));
 		this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
 			this.requestLocation.bind(this),
@@ -30,37 +31,32 @@ class NewsDialog extends ComponentDialog {
 			starter.showNewsPossibilities.bind(this),
 			starter.showDataStep.bind(this)
 		]));
-		
+
 		this.initialDialogId = WATERFALL_DIALOG;
 	}
 
 	async requestLocation(stepContext) {
-		// console.log('this.userProfile NEWS: ', this.userProfile);
-		// console.log(`\nNews Dialog: Step 1`);
-		if (this.starter.userDBState.resource.location && this.starter.userDBState.resource.location.countryCode){
+		if (this.userProfile.location && this.userProfile.location.countryCode) {
 			return await stepContext.next();
 		}
-		
+
 		return await stepContext.prompt(NEWS_PROMPT, 'Please share your Country.');
 	}
 
 	async captureCoordinates(stepContext) {
-		// console.log(`\nNews Dialog: Step 2`);
-		// temp coordinates '47.591180,-122.332700'
 		const country = stepContext.result;
 		if (country) {
 			mkt = countries[country.toLowerCase()];
-			await this.starter.updateUserCountry(mkt)
-			
-			// this.userProfile.location.countryCode = mkt;
-			// this.userProfile.saveChanges(stepContext.context);
+
+			this.userProfile.location.countryCode = mkt;
+
+			this.userProfile.saveChanges(stepContext.context);
 		}
 
 		return await stepContext.next();
 	}
-	
+
 	async returnNews(stepContext) {
-		// console.log(`\nNews Dialog: Step 3`);
 		try {
 			const searchStr = (stepContext.options.newsType !== 'What is the latest news?') ? stepContext.options.newsType : '';
 			const initialMessage = (stepContext.options.newsType === 'What is the latest news?') ? "Here are some results from a search:" : `Here's the latest ${stepContext.options.newsType}:`;
@@ -77,7 +73,7 @@ class NewsDialog extends ComponentDialog {
 			const responseData = await getRequestData(bingHost, options, newsHeader);
 			const serviceNotResp = 'It looks like the News search service is not responding at the moment.';
 			const checkConnection = 'Please check your Internet connection and try again later.';
-			
+
 			if (responseData.body.error) {
 				console.error(responseData.body.error);
 				await stepContext.context.sendActivity(serviceNotResp, null, InputHints.IgnoringInput);
@@ -87,7 +83,7 @@ class NewsDialog extends ComponentDialog {
 			} else {
 				if (responseData.body.value.length > 0) {
 					const newsCarousel = buildNewsCarousel(responseData.body.value);
-					
+
 					// await stepContext.context.sendActivity('Here’s what I found:', 'Here’s what I found:', InputHints.IgnoringInput);
 					await stepContext.context.sendActivity(newsCarousel, null, InputHints.IgnoringInput);
 				} else {
@@ -102,8 +98,8 @@ class NewsDialog extends ComponentDialog {
 		} catch (err) {
 			console.error(`\n Error in the News Dialog: return news method`);
 			console.error(err);
-		} 
-		
+		}
+
 	}
 }
 

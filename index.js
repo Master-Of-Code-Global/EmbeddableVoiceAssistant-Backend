@@ -17,10 +17,11 @@ const restify = require('restify');
 const { BotFrameworkAdapter, ConversationState, InputHints, MemoryStorage, UserState } = require('botbuilder');
 const { CosmosDbPartitionedStorage } = require('botbuilder-azure');
 
+const { IVYLuisRecognizer } = require('./dialogs/luisRecognizer');
+
 // This bot's main dialog.
 const { DialogAndWelcomeBot } = require('./bots/dialogAndWelcomeBot');
 const { MainDialog } = require('./dialogs/mainDialog');
-const { StarterDialog } = require('./dialogs/starter');
 
 // the bot's booking dialog
 // const { BookingDialog } = require('./dialogs/bookingDialog');
@@ -38,12 +39,12 @@ const onTurnErrorHandler = async (context, error) => {
     // This check writes out errors to console log .vs. app insights.
     // NOTE: In production environment, you should consider logging this to Azure
     //       application insights.
-    console.error(`\n [onTurnError] unhandled error: ${ error }`);
+    console.error(`\n [onTurnError] unhandled error: ${error}`);
 
     // Send a trace activity, which will be displayed in Bot Framework Emulator
     await context.sendTraceActivity(
         'OnTurnError Trace',
-        `${ error }`,
+        `${error}`,
         'https://www.botframework.com/schemas/error',
         'TurnError'
     );
@@ -87,18 +88,23 @@ if (process.env.NODE_ENV !== 'local') {
     console.log(`\nBot uses memory storage`);
 }
 
-const starter = new StarterDialog();
+
+// If configured, pass in the FlightBookingRecognizer.  (Defining it externally allows it to be mocked for tests)
+const { LuisAppId, LuisAPIKey, LuisAPIHostName } = process.env;
+const luisConfig = { applicationId: LuisAppId, endpointKey: LuisAPIKey, endpoint: `https://${LuisAPIHostName}` };
+
+const luisRecognizer = new IVYLuisRecognizer(luisConfig);
 
 // Create the main dialog.
 // const bookingDialog = new BookingDialog(BOOKING_DIALOG);
-const dialog = new MainDialog(starter);
+const dialog = new MainDialog(luisRecognizer, userState);
 // const dialog = new MainDialog(luisRecognizer, bookingDialog);
-const bot = new DialogAndWelcomeBot(conversationState, userState, dialog, starter);
+const bot = new DialogAndWelcomeBot(conversationState, userState, dialog);
 
 // Create HTTP server
 const server = restify.createServer();
-server.listen(process.env.port || process.env.PORT || 3978, function() {
-    console.log(`\n${ server.name } listening to ${ server.url }`);
+server.listen(process.env.port || process.env.PORT || 3978, function () {
+    console.log(`\n${server.name} listening to ${server.url}`);
     console.log('\nGet Bot Framework Emulator: https://aka.ms/botframework-emulator');
     console.log('\nTo talk to your bot, open the emulator select "Open Bot"');
 });
@@ -114,7 +120,7 @@ server.post('/api/messages', (req, res) => {
 
 // Listen for Upgrade requests for Streaming.
 server.on('upgrade', (req, socket, head) => {
-	console.log('Updated Conversation');
+    console.log('Updated Conversation');
     // Create an adapter scoped to this WebSocket connection to allow storing session data.
     const streamingAdapter = new BotFrameworkAdapter({
         appId: process.env.MicrosoftAppId,
