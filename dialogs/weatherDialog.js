@@ -135,9 +135,17 @@ class WeatherDialog extends ComponentDialog {
 		// console.log('stepContext.result: ', stepContext.result);
 
 		if (stepContext.result !== undefined && stepContext.result.city) {
-			city = stepContext.result.city;
+			const cityWords = stepContext.result.city.split(" ");
+			for (let i = 0; i < cityWords.length; i++) {
+				cityWords[i] = cityWords[i][0].toUpperCase() + cityWords[i].substr(1).toLowerCase();
+			}
+			city = cityWords.join(" ");
 		} else if (userLocation.location && userLocation.location.city) {
-			city = userLocation.location.city;
+			const cityWords = userLocation.location.city.split(" ");
+			for (let i = 0; i < cityWords.length; i++) {
+				cityWords[i] = cityWords[i][0].toUpperCase() + cityWords[i].substr(1).toLowerCase();
+			}
+			city = cityWords.join(" ");
 			if (userLocation.location.countryCode) {
 				countryCode = userLocation.location.countryCode;
 			}

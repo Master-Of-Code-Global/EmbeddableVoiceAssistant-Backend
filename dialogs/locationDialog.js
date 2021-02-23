@@ -114,8 +114,11 @@ class LocationDialog extends ComponentDialog {
 			const city = luisResult.entities.geographyV2[0].location;
 
 			if (city) {
-				userLocation.location.city = city;
-
+				const cityWords = city.split(" ");
+				for (let i = 0; i < cityWords.length; i++) {
+					cityWords[i] = cityWords[i][0].toUpperCase() + cityWords[i].substr(1).toLowerCase();
+				}
+				userLocation.location.city = cityWords.join(" ");
 				return await stepContext.endDialog();
 				// return await stepContext.next();
 			} else {
