@@ -14,7 +14,6 @@ const newsHeader = {
 	"Ocp-Apim-Subscription-Key": process.env.BING_SEARCH_V7_SUBSCRIPTION_KEY,
 	"Accept-Language": 'en'
 };
-let mkt = '';
 
 class NewsDialog extends ComponentDialog {
 	constructor(luisRecognizer, userState, starter) {
@@ -57,7 +56,7 @@ class NewsDialog extends ComponentDialog {
 		const userLocation = await this.userProfile.get(stepContext.context);
 		const country = stepContext.result;
 		if (country) {
-			mkt = countries[country.toLowerCase()];
+			const mkt = countries[country.toLowerCase()];
 
 			userLocation.location.countryCode = mkt;
 		}
@@ -66,6 +65,8 @@ class NewsDialog extends ComponentDialog {
 	}
 
 	async returnNews(stepContext) {
+		const userLocation = await this.userProfile.get(stepContext.context);
+		const mkt = (userLocation.location.countryCode) ? userLocation.location.countryCode : '';
 		try {
 			const searchStr = (stepContext.options.newsType !== 'What is the latest news?') ? stepContext.options.newsType : '';
 			const initialMessage = (stepContext.options.newsType === 'What is the latest news?') ? "Here are some results from a search:" : `Here's the latest ${stepContext.options.newsType}:`;
