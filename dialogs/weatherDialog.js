@@ -109,10 +109,6 @@ class WeatherDialog extends ComponentDialog {
 			this.userProfile.set(stepContext.context, userLocation);
 		}
 
-		if (userLocation.location && userLocation.location.city) {
-			return await stepContext.next();
-		}
-
 		if (stepContext.options.weatherRequest.geographyV2) {
 			const city = stepContext.options.weatherRequest.geographyV2[0].location;
 			
