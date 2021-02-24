@@ -8,35 +8,35 @@ const OPTIONS_PROMPT = 'optionsPrompt';
 const MAIN_WATERFALL_DIALOG = 'optionsDialog';
 
 class MainDialog extends ComponentDialog {
-	constructor(luisRecognizer, userState) {
-		super('MainDialog');
+  constructor(luisRecognizer, userState) {
+    super('MainDialog');
 
-		this.userState = userState;
-		this.starter = new StarterDialog(luisRecognizer);
+    this.userState = userState;
+    this.starter = new StarterDialog(luisRecognizer);
 
-		if (!this.userState.location) {
-			this.userState.location = {
-				countryCode: undefined,
-				city: undefined
-			};
-		}
+    if (!this.userState.location) {
+      this.userState.location = {
+        countryCode: undefined,
+        city: undefined
+      };
+    }
 
-		if (!luisRecognizer) throw new Error('[MainDialog]: Missing parameter \'luisRecognizer\' is required');
-		this.luisRecognizer = luisRecognizer;
+    if (!luisRecognizer) throw new Error('[MainDialog]: Missing parameter \'luisRecognizer\' is required');
+    this.luisRecognizer = luisRecognizer;
 
-		this.addDialog(new TextPrompt(OPTIONS_PROMPT));
-		this.addDialog(new NewsDialog(this.luisRecognizer, this.userState, this.starter));
-		this.addDialog(new JokeDialog(this.luisRecognizer, this.starter));
-		this.addDialog(new WeatherDialog(this.luisRecognizer, this.userState, this.starter));
-		this.addDialog(new WaterfallDialog(MAIN_WATERFALL_DIALOG, [
-			this.starter.showPossibilities.bind(this),
-			this.starter.showDataStep.bind(this)
-		]));
+    this.addDialog(new TextPrompt(OPTIONS_PROMPT));
+    this.addDialog(new NewsDialog(this.luisRecognizer, this.userState, this.starter));
+    this.addDialog(new JokeDialog(this.luisRecognizer, this.starter));
+    this.addDialog(new WeatherDialog(this.luisRecognizer, this.userState, this.starter));
+    this.addDialog(new WaterfallDialog(MAIN_WATERFALL_DIALOG, [
+      this.starter.showPossibilities.bind(this),
+      this.starter.showDataStep.bind(this)
+    ]));
 
-		this.initialDialogId = MAIN_WATERFALL_DIALOG;
-	}
+    this.initialDialogId = MAIN_WATERFALL_DIALOG;
+  }
 
-	/**
+  /**
 	 * The run method handles the incoming activity (in the form of a TurnContext) and passes it through the dialog system.
 	 * If no dialog is active, it will start the default dialog.
 	 * @param {*} turnContext
@@ -44,16 +44,16 @@ class MainDialog extends ComponentDialog {
 	 * @param {*} userAccessor
 	 */
 
-	async run(turnContext, accessor, userAccessor) {
-		const dialogSet = new DialogSet(accessor);
-		dialogSet.add(this);
+  async run(turnContext, accessor, userAccessor) {
+    const dialogSet = new DialogSet(accessor);
+    dialogSet.add(this);
 
-		const dialogContext = await dialogSet.createContext(turnContext);
-		const results = await dialogContext.continueDialog();
-		if (results.status === DialogTurnStatus.empty) {
-			await dialogContext.beginDialog(this.id);
-		}
-	}
+    const dialogContext = await dialogSet.createContext(turnContext);
+    const results = await dialogContext.continueDialog();
+    if (results.status === DialogTurnStatus.empty) {
+      await dialogContext.beginDialog(this.id);
+    }
+  }
 }
 
 module.exports.MainDialog = MainDialog;

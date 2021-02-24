@@ -1,39 +1,39 @@
-const { ActionTypes } = require("botbuilder");
+const { ActionTypes } = require('botbuilder');
 
 const weatherToday = {
   type: ActionTypes.ImBack,
   title: 'What is the weather today?',
-  value: 'What is the weather today?',
+  value: 'What is the weather today?'
 };
 
 const weatherTomorrow = {
-	type: ActionTypes.ImBack,
-	title: 'What is the weather tomorrow?',
-	value: 'What is the weather tomorrow?',
+  type: ActionTypes.ImBack,
+  title: 'What is the weather tomorrow?',
+  value: 'What is the weather tomorrow?'
 };
 
 const weatherThisWeek = {
-	type: ActionTypes.ImBack,
-	title: 'Weather for this week',
-	value: 'Weather for this week',
+  type: ActionTypes.ImBack,
+  title: 'Weather for this week',
+  value: 'Weather for this week'
 };
 
 const defaultNews = {
   type: ActionTypes.ImBack,
   title: 'What is the latest news?',
-  value: 'What is the latest news?',
+  value: 'What is the latest news?'
 };
 
 const breakingNews = {
-	type: ActionTypes.ImBack,
-	title: 'Breaking news',
-	value: 'Breaking news',
+  type: ActionTypes.ImBack,
+  title: 'Breaking news',
+  value: 'Breaking news'
 };
 
 const tellJoke = {
   type: ActionTypes.ImBack,
   title: 'Tell me a joke',
-  value: 'Tell me a joke',
+  value: 'Tell me a joke'
 };
 
 const worldNews = {
@@ -45,8 +45,8 @@ const worldNews = {
 const aiNews = {
   type: ActionTypes.ImBack,
   title: 'AI news',
-  value: 'AI news',
-}
+  value: 'AI news'
+};
 
 const healthNews = {
   type: ActionTypes.ImBack,
@@ -57,25 +57,25 @@ const healthNews = {
 const itNews = {
   type: ActionTypes.ImBack,
   title: 'IT Tech news',
-  value: 'IT Tech news',
+  value: 'IT Tech news'
 };
 
 const anotherJoke = {
-	type: ActionTypes.ImBack,
-	title: 'Another One',
-	value: 'Another One',
-}
+  type: ActionTypes.ImBack,
+  title: 'Another One',
+  value: 'Another One'
+};
 
 module.exports = {
   weatherToday,
-	weatherTomorrow,
-	weatherThisWeek,
+  weatherTomorrow,
+  weatherThisWeek,
   defaultNews,
-	breakingNews,
+  breakingNews,
   tellJoke,
   worldNews,
   aiNews,
   healthNews,
   itNews,
-	anotherJoke
-}
+  anotherJoke
+};

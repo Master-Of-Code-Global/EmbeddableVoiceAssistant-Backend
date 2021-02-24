@@ -1,6 +1,4 @@
-let request = require('requestretry');
-
-
+const request = require('requestretry');
 
 getRequestData = async (uri, queryParams = {}, headers = {}) => {
   return await request.get({
@@ -12,8 +10,8 @@ getRequestData = async (uri, queryParams = {}, headers = {}) => {
     retryStrategy: request.RetryStrategies.HTTPOrNetworkError,
     headers
   });
-}
+};
 
 module.exports = {
   getRequestData
-}
+};
