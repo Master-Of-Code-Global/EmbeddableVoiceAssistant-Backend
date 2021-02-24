@@ -15,6 +15,14 @@ const newsHeader = {
 	"Accept-Language": 'en'
 };
 
+const newsQuickReplies = [
+	"Breaking news",
+	"World news",
+	"AI news",
+	"Health news",
+	"IT Tech news"
+]
+
 class NewsDialog extends ComponentDialog {
 	constructor(luisRecognizer, userState, starter) {
 		super(NEWS_DIALOG);
@@ -69,7 +77,7 @@ class NewsDialog extends ComponentDialog {
 		const mkt = (userLocation.location.countryCode) ? userLocation.location.countryCode : '';
 		try {
 			const searchStr = (stepContext.options.newsType !== 'What is the latest news?') ? stepContext.options.newsType : '';
-			const initialMessage = (stepContext.options.newsType === 'What is the latest news?') ? "Here are some results from a search:" : `Here's the latest ${stepContext.options.newsType}:`;
+			const initialMessage = (!newsQuickReplies.includes(stepContext.options.newsType)) ? "Here are some results from a search:" : `Here's the latest ${stepContext.options.newsType}:`;
 
 			await stepContext.context.sendActivity(initialMessage, initialMessage, InputHints.IgnoringInput);
 
