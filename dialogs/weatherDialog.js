@@ -32,17 +32,12 @@ class WeatherDialog extends ComponentDialog {
 	}
 
 	async getWeatherDailyData(coordinates, duration) {
-		console.log(`\ngetWeatherDailyData coordinates`);
-		console.log(coordinates);
 		const url = process.env.DailyWeatherUrl + coordinates + '&duration=' + duration + '&subscription-key=' + process.env.WeatherSubscriptionKey;
 		const options = {
 			fullResponse: false
 		};
 		const responseData = await getRequestData(url, options);
 
-		console.log('responseData: ', responseData);
-		console.log(`\nDaily Forecasts`);
-		console.log(responseData.forecasts);
 		if (responseData.forecasts && responseData.forecasts.length > 0) {
 			return responseData.forecasts;
 		} else {
@@ -67,8 +62,6 @@ class WeatherDialog extends ComponentDialog {
 	}
 
 	async getWeatherQuarterData(coordinates, stepContext, duration) {
-		console.log(`\ngetWeatherQuarterData coordinates`);
-		console.log(coordinates);
 		const withDuration = duration ? `&duration=${duration}` : '';
 		const url = process.env.QuarterWeatherUrl + coordinates + '&subscription-key=' + process.env.WeatherSubscriptionKey + withDuration;
 		const options = {
@@ -76,8 +69,6 @@ class WeatherDialog extends ComponentDialog {
 		};
 		const responseData = await getRequestData(url, options);
 
-		console.log(`\ngetWeatherQuarterData forecasts`);
-		console.log(responseData.forecasts);
 		if (responseData.forecasts && responseData.forecasts.length > 0) {
 			return responseData.forecasts;
 		} else {
@@ -88,10 +79,10 @@ class WeatherDialog extends ComponentDialog {
 	}
 
 	async getCoordinates(city, countryCode) {
-		// let withCountry = countryCode ? '&countrySet=' + countryCode : '';
-		let withCountry = '';
+		let withCountry = countryCode ? '&countrySet=' + countryCode : '';
 
 		const url = process.env.CoordinatesUrl + city + '&subscription-key=' + process.env.WeatherSubscriptionKey + withCountry;
+		const urlWithoutCountry = process.env.CoordinatesUrl + city + '&subscription-key=' + process.env.WeatherSubscriptionKey;
 		const options = {
 			fullResponse: false
 		};
@@ -100,7 +91,12 @@ class WeatherDialog extends ComponentDialog {
 		if (responseData.results.length > 0) {
 			return `${responseData.results[0].position.lat},${responseData.results[0].position.lon}`;
 		} else {
-			return {};
+			const cityData = await getRequestData(urlWithoutCountry, options);
+			if (cityData.results.length > 0) {
+				return `${cityData.results[0].position.lat},${cityData.results[0].position.lon}`;
+			} else {
+				return {};
+			}
 		}
 	}
 
@@ -130,16 +126,12 @@ class WeatherDialog extends ComponentDialog {
 	}
 
 	async returnWeather(stepContext) {
-		// console.log('weatherRequest: ', stepContext.options.weatherRequest);
-		// console.log('weatherRequest datetime: ', stepContext.options.weatherRequest.datetime);
 
 		const userLocation = await this.userProfile.get(stepContext.context);
 
 		let city = undefined;
 		let countryCode = undefined;
 		let weatherCard = {};
-
-		// console.log('stepContext.result: ', stepContext.result);
 
 		if (stepContext.result !== undefined && stepContext.result.city) {
 			const cityWords = stepContext.result.city.split(" ");
