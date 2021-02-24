@@ -1,0 +1,1515 @@
+{
+  "luis_schema_version": "7.0.0",
+  "intents": [
+    {
+      "name": "NewsUpdate_Request",
+      "features": [
+        {
+          "featureName": "news synonyms",
+          "isRequired": false
+        },
+        {
+          "modelName": "news_update",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "None",
+      "features": []
+    },
+    {
+      "name": "QR_Another_joke",
+      "features": []
+    },
+    {
+      "name": "QR_Weather_suggestion_chips",
+      "features": []
+    },
+    {
+      "name": "ST_How_are_you",
+      "features": []
+    },
+    {
+      "name": "ST_Microphone_Check",
+      "features": []
+    },
+    {
+      "name": "ST_Repeat",
+      "features": []
+    },
+    {
+      "name": "ST_ThankYou",
+      "features": []
+    },
+    {
+      "name": "ST_user_greeting",
+      "features": []
+    },
+    {
+      "name": "ST_What_can_bot_do",
+      "features": []
+    },
+    {
+      "name": "ST_What_Your_Name",
+      "features": []
+    },
+    {
+      "name": "ST_Who_are_you",
+      "features": []
+    },
+    {
+      "name": "TellJoke_Request",
+      "features": [
+        {
+          "featureName": "joke synonyms",
+          "isRequired": false
+        },
+        {
+          "modelName": "joke",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "User_Location",
+      "features": [
+        {
+          "modelName": "geographyV2",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "WeatherForecast_Request",
+      "features": [
+        {
+          "featureName": "weather synonyms",
+          "isRequired": false
+        },
+        {
+          "modelName": "weather_forecast",
+          "isRequired": false
+        }
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "name": "joke",
+      "children": [],
+      "roles": [],
+      "features": [
+        {
+          "featureName": "joke synonyms",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "news_update",
+      "children": [],
+      "roles": [],
+      "features": [
+        {
+          "featureName": "news synonyms",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "weather_forecast",
+      "children": [],
+      "roles": [],
+      "features": [
+        {
+          "featureName": "weather synonyms",
+          "isRequired": false
+        }
+      ]
+    }
+  ],
+  "hierarchicals": [],
+  "composites": [],
+  "closedLists": [],
+  "prebuiltEntities": [
+    {
+      "name": "datetimeV2",
+      "roles": []
+    },
+    {
+      "name": "geographyV2",
+      "roles": []
+    }
+  ],
+  "utterances": [
+    {
+      "text": "again",
+      "intent": "ST_Repeat",
+      "entities": []
+    },
+    {
+      "text": "aloha",
+      "intent": "ST_user_greeting",
+      "entities": []
+    },
+    {
+      "text": "alright",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "amazing",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "another joke",
+      "intent": "TellJoke_Request",
+      "entities": [
+        {
+          "entity": "joke",
+          "startPos": 8,
+          "endPos": 11,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "another one",
+      "intent": "QR_Another_joke",
+      "entities": []
+    },
+    {
+      "text": "anybody hears me",
+      "intent": "ST_Microphone_Check",
+      "entities": []
+    },
+    {
+      "text": "anybody there",
+      "intent": "ST_Microphone_Check",
+      "entities": []
+    },
+    {
+      "text": "are you a bot",
+      "intent": "ST_Who_are_you",
+      "entities": []
+    },
+    {
+      "text": "are you a person",
+      "intent": "ST_Who_are_you",
+      "entities": []
+    },
+    {
+      "text": "are you a robot",
+      "intent": "ST_Who_are_you",
+      "entities": []
+    },
+    {
+      "text": "are you alive",
+      "intent": "ST_Who_are_you",
+      "entities": []
+    },
+    {
+      "text": "are you alright",
+      "intent": "ST_How_are_you",
+      "entities": []
+    },
+    {
+      "text": "are you listening",
+      "intent": "ST_Microphone_Check",
+      "entities": []
+    },
+    {
+      "text": "are you okay",
+      "intent": "ST_How_are_you",
+      "entities": []
+    },
+    {
+      "text": "are you real",
+      "intent": "ST_Who_are_you",
+      "entities": []
+    },
+    {
+      "text": "are you there",
+      "intent": "ST_Microphone_Check",
+      "entities": []
+    },
+    {
+      "text": "awesome",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "awesome thanks",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "belgium",
+      "intent": "User_Location",
+      "entities": []
+    },
+    {
+      "text": "berlin city",
+      "intent": "User_Location",
+      "entities": []
+    },
+    {
+      "text": "breaking news",
+      "intent": "NewsUpdate_Request",
+      "entities": [
+        {
+          "entity": "news_update",
+          "startPos": 0,
+          "endPos": 12,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "bye",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "bye bye",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "can i ask something",
+      "intent": "ST_What_can_bot_do",
+      "entities": []
+    },
+    {
+      "text": "can i speak",
+      "intent": "ST_Microphone_Check",
+      "entities": []
+    },
+    {
+      "text": "can you do anything",
+      "intent": "ST_What_can_bot_do",
+      "entities": []
+    },
+    {
+      "text": "can you hear me",
+      "intent": "ST_Microphone_Check",
+      "entities": []
+    },
+    {
+      "text": "can you help me",
+      "intent": "ST_What_can_bot_do",
+      "entities": []
+    },
+    {
+      "text": "can you repeat that",
+      "intent": "ST_Repeat",
+      "entities": []
+    },
+    {
+      "text": "can you say that again",
+      "intent": "ST_Repeat",
+      "entities": []
+    },
+    {
+      "text": "can you understand me",
+      "intent": "ST_What_can_bot_do",
+      "entities": []
+    },
+    {
+      "text": "can't thank you enough",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "can't you hear me",
+      "intent": "ST_Microphone_Check",
+      "entities": []
+    },
+    {
+      "text": "chicago headlines",
+      "intent": "NewsUpdate_Request",
+      "entities": [
+        {
+          "entity": "news_update",
+          "startPos": 8,
+          "endPos": 16,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "ciao",
+      "intent": "ST_user_greeting",
+      "entities": []
+    },
+    {
+      "text": "come again",
+      "intent": "ST_Repeat",
+      "entities": []
+    },
+    {
+      "text": "denver, colorado",
+      "intent": "User_Location",
+      "entities": []
+    },
+    {
+      "text": "do you have a name",
+      "intent": "ST_What_Your_Name",
+      "entities": []
+    },
+    {
+      "text": "do you hear me",
+      "intent": "ST_Microphone_Check",
+      "entities": []
+    },
+    {
+      "text": "do you hear what i say",
+      "intent": "ST_Microphone_Check",
+      "entities": []
+    },
+    {
+      "text": "do you listen",
+      "intent": "ST_Microphone_Check",
+      "entities": []
+    },
+    {
+      "text": "do you understand me",
+      "intent": "ST_What_can_bot_do",
+      "entities": []
+    },
+    {
+      "text": "does it work",
+      "intent": "ST_Microphone_Check",
+      "entities": []
+    },
+    {
+      "text": "does the microphone work",
+      "intent": "ST_Microphone_Check",
+      "entities": []
+    },
+    {
+      "text": "fairbanks, alaska",
+      "intent": "User_Location",
+      "entities": []
+    },
+    {
+      "text": "fine thank you",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "for kiev city",
+      "intent": "User_Location",
+      "entities": []
+    },
+    {
+      "text": "good afternoon",
+      "intent": "ST_user_greeting",
+      "entities": []
+    },
+    {
+      "text": "good bye",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "good bye thank you",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "good evening",
+      "intent": "ST_user_greeting",
+      "entities": []
+    },
+    {
+      "text": "good girl",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "good morning",
+      "intent": "ST_user_greeting",
+      "entities": []
+    },
+    {
+      "text": "good thank you",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "good work",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "gracias",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "great",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "great thank you",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "greetings",
+      "intent": "ST_user_greeting",
+      "entities": []
+    },
+    {
+      "text": "hello",
+      "intent": "ST_user_greeting",
+      "entities": []
+    },
+    {
+      "text": "hello there",
+      "intent": "ST_user_greeting",
+      "entities": []
+    },
+    {
+      "text": "help me",
+      "intent": "ST_What_can_bot_do",
+      "entities": []
+    },
+    {
+      "text": "hey",
+      "intent": "ST_user_greeting",
+      "entities": []
+    },
+    {
+      "text": "hey hey",
+      "intent": "ST_user_greeting",
+      "entities": []
+    },
+    {
+      "text": "hey hi hello",
+      "intent": "ST_user_greeting",
+      "entities": []
+    },
+    {
+      "text": "hey there",
+      "intent": "ST_user_greeting",
+      "entities": []
+    },
+    {
+      "text": "hey you",
+      "intent": "ST_user_greeting",
+      "entities": []
+    },
+    {
+      "text": "hi",
+      "intent": "ST_user_greeting",
+      "entities": []
+    },
+    {
+      "text": "hi there",
+      "intent": "ST_user_greeting",
+      "entities": []
+    },
+    {
+      "text": "hiya",
+      "intent": "ST_user_greeting",
+      "entities": []
+    },
+    {
+      "text": "how about friday",
+      "intent": "QR_Weather_suggestion_chips",
+      "entities": []
+    },
+    {
+      "text": "how are things going",
+      "intent": "ST_How_are_you",
+      "entities": []
+    },
+    {
+      "text": "how are you",
+      "intent": "ST_How_are_you",
+      "entities": []
+    },
+    {
+      "text": "how are you doing",
+      "intent": "ST_How_are_you",
+      "entities": []
+    },
+    {
+      "text": "how are you feeling",
+      "intent": "ST_How_are_you",
+      "entities": []
+    },
+    {
+      "text": "how are you today",
+      "intent": "ST_How_are_you",
+      "entities": []
+    },
+    {
+      "text": "how can i address you",
+      "intent": "ST_What_Your_Name",
+      "entities": []
+    },
+    {
+      "text": "how can you help",
+      "intent": "ST_What_can_bot_do",
+      "entities": []
+    },
+    {
+      "text": "how do they call you",
+      "intent": "ST_What_Your_Name",
+      "entities": []
+    },
+    {
+      "text": "how do you do",
+      "intent": "ST_user_greeting",
+      "entities": []
+    },
+    {
+      "text": "how do you work",
+      "intent": "ST_What_can_bot_do",
+      "entities": []
+    },
+    {
+      "text": "how does it work",
+      "intent": "ST_What_can_bot_do",
+      "entities": []
+    },
+    {
+      "text": "how have you been",
+      "intent": "ST_How_are_you",
+      "entities": []
+    },
+    {
+      "text": "how is it going",
+      "intent": "ST_How_are_you",
+      "entities": []
+    },
+    {
+      "text": "how is the weather",
+      "intent": "WeatherForecast_Request",
+      "entities": [
+        {
+          "entity": "weather_forecast",
+          "startPos": 11,
+          "endPos": 17,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "how is your day",
+      "intent": "ST_How_are_you",
+      "entities": []
+    },
+    {
+      "text": "how should i call you",
+      "intent": "ST_What_Your_Name",
+      "entities": []
+    },
+    {
+      "text": "how was your day",
+      "intent": "ST_How_are_you",
+      "entities": []
+    },
+    {
+      "text": "how you doing",
+      "intent": "ST_How_are_you",
+      "entities": []
+    },
+    {
+      "text": "how's everything",
+      "intent": "ST_How_are_you",
+      "entities": []
+    },
+    {
+      "text": "how's life",
+      "intent": "ST_How_are_you",
+      "entities": []
+    },
+    {
+      "text": "i appreciate that",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "i greet you",
+      "intent": "ST_user_greeting",
+      "entities": []
+    },
+    {
+      "text": "i need your help",
+      "intent": "ST_What_can_bot_do",
+      "entities": []
+    },
+    {
+      "text": "i'm from michigan",
+      "intent": "User_Location",
+      "entities": []
+    },
+    {
+      "text": "i'm in antwerp",
+      "intent": "User_Location",
+      "entities": []
+    },
+    {
+      "text": "is it cold outside",
+      "intent": "WeatherForecast_Request",
+      "entities": [
+        {
+          "entity": "weather_forecast",
+          "startPos": 6,
+          "endPos": 9,
+          "children": []
+        },
+        {
+          "entity": "weather_forecast",
+          "startPos": 11,
+          "endPos": 17,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "is it working",
+      "intent": "ST_Microphone_Check",
+      "entities": []
+    },
+    {
+      "text": "is the mic working",
+      "intent": "ST_Microphone_Check",
+      "entities": []
+    },
+    {
+      "text": "is this thing working",
+      "intent": "ST_Microphone_Check",
+      "entities": []
+    },
+    {
+      "text": "it's hong kong",
+      "intent": "User_Location",
+      "entities": []
+    },
+    {
+      "text": "jamaica",
+      "intent": "User_Location",
+      "entities": []
+    },
+    {
+      "text": "latest news in science",
+      "intent": "NewsUpdate_Request",
+      "entities": [
+        {
+          "entity": "news_update",
+          "startPos": 0,
+          "endPos": 10,
+          "children": []
+        },
+        {
+          "entity": "news_update",
+          "startPos": 15,
+          "endPos": 21,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "let it be tokyo, japan",
+      "intent": "User_Location",
+      "entities": []
+    },
+    {
+      "text": "make a sound",
+      "intent": "ST_Microphone_Check",
+      "entities": []
+    },
+    {
+      "text": "make me laugh",
+      "intent": "TellJoke_Request",
+      "entities": [
+        {
+          "entity": "joke",
+          "startPos": 8,
+          "endPos": 12,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "much appreciated",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "much obliged",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "my city is budapest",
+      "intent": "User_Location",
+      "entities": []
+    },
+    {
+      "text": "news headlines",
+      "intent": "NewsUpdate_Request",
+      "entities": [
+        {
+          "entity": "news_update",
+          "startPos": 0,
+          "endPos": 3,
+          "children": []
+        },
+        {
+          "entity": "news_update",
+          "startPos": 5,
+          "endPos": 13,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "news headlines in usa",
+      "intent": "NewsUpdate_Request",
+      "entities": [
+        {
+          "entity": "news_update",
+          "startPos": 0,
+          "endPos": 3,
+          "children": []
+        },
+        {
+          "entity": "news_update",
+          "startPos": 5,
+          "endPos": 13,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "next",
+      "intent": "QR_Another_joke",
+      "entities": []
+    },
+    {
+      "text": "next joke",
+      "intent": "QR_Another_joke",
+      "entities": []
+    },
+    {
+      "text": "nice job",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "nice work",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "odessa, texas",
+      "intent": "User_Location",
+      "entities": []
+    },
+    {
+      "text": "ok bye",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "ok thank you",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "ok thanks",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "okay",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "okay bye",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "okay thank you",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "okay thank you bye",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "okay thanks",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "once again",
+      "intent": "ST_Repeat",
+      "entities": []
+    },
+    {
+      "text": "one more",
+      "intent": "QR_Another_joke",
+      "entities": []
+    },
+    {
+      "text": "one more joke",
+      "intent": "QR_Another_joke",
+      "entities": []
+    },
+    {
+      "text": "perfect",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "perfect thank you",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "perfect thanks",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "repeat",
+      "intent": "ST_Repeat",
+      "entities": []
+    },
+    {
+      "text": "repeat it one more time",
+      "intent": "ST_Repeat",
+      "entities": []
+    },
+    {
+      "text": "repeat the message",
+      "intent": "ST_Repeat",
+      "entities": []
+    },
+    {
+      "text": "repeat what you said",
+      "intent": "ST_Repeat",
+      "entities": []
+    },
+    {
+      "text": "say again",
+      "intent": "ST_Repeat",
+      "entities": []
+    },
+    {
+      "text": "say something funny",
+      "intent": "TellJoke_Request",
+      "entities": [
+        {
+          "entity": "joke",
+          "startPos": 14,
+          "endPos": 18,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "say that again",
+      "intent": "ST_Repeat",
+      "entities": []
+    },
+    {
+      "text": "sounds good",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "tell me a joke",
+      "intent": "TellJoke_Request",
+      "entities": [
+        {
+          "entity": "joke",
+          "startPos": 10,
+          "endPos": 13,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "tell me an interesting fact",
+      "intent": "NewsUpdate_Request",
+      "entities": [
+        {
+          "entity": "news_update",
+          "startPos": 11,
+          "endPos": 21,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "tell me something interesting",
+      "intent": "NewsUpdate_Request",
+      "entities": [
+        {
+          "entity": "news_update",
+          "startPos": 18,
+          "endPos": 28,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "tell me the news",
+      "intent": "NewsUpdate_Request",
+      "entities": [
+        {
+          "entity": "news_update",
+          "startPos": 12,
+          "endPos": 15,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "tell me the weather",
+      "intent": "WeatherForecast_Request",
+      "entities": [
+        {
+          "entity": "weather_forecast",
+          "startPos": 12,
+          "endPos": 18,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "tell me your name",
+      "intent": "ST_What_Your_Name",
+      "entities": []
+    },
+    {
+      "text": "test",
+      "intent": "ST_Microphone_Check",
+      "entities": []
+    },
+    {
+      "text": "thank ya",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "thank you",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "thank you a lot",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "thank you bye",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "thankee",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "thanks",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "thanks a lot",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "thanks you",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "that's all thanks",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "today news",
+      "intent": "NewsUpdate_Request",
+      "entities": [
+        {
+          "entity": "news_update",
+          "startPos": 6,
+          "endPos": 9,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "today's news",
+      "intent": "NewsUpdate_Request",
+      "entities": [
+        {
+          "entity": "news_update",
+          "startPos": 8,
+          "endPos": 11,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "tomorrow news",
+      "intent": "NewsUpdate_Request",
+      "entities": [
+        {
+          "entity": "news_update",
+          "startPos": 9,
+          "endPos": 12,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "ton of thanks",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "ukraine",
+      "intent": "User_Location",
+      "entities": []
+    },
+    {
+      "text": "want to have fun",
+      "intent": "TellJoke_Request",
+      "entities": [
+        {
+          "entity": "joke",
+          "startPos": 13,
+          "endPos": 15,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "weather forecast",
+      "intent": "WeatherForecast_Request",
+      "entities": [
+        {
+          "entity": "weather_forecast",
+          "startPos": 0,
+          "endPos": 6,
+          "children": []
+        },
+        {
+          "entity": "weather_forecast",
+          "startPos": 8,
+          "endPos": 15,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "weather in brooklyn",
+      "intent": "WeatherForecast_Request",
+      "entities": [
+        {
+          "entity": "weather_forecast",
+          "startPos": 0,
+          "endPos": 6,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "weather in ohio tomorrow",
+      "intent": "WeatherForecast_Request",
+      "entities": [
+        {
+          "entity": "weather_forecast",
+          "startPos": 0,
+          "endPos": 6,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "well done",
+      "intent": "ST_ThankYou",
+      "entities": []
+    },
+    {
+      "text": "what about this weekend",
+      "intent": "QR_Weather_suggestion_chips",
+      "entities": []
+    },
+    {
+      "text": "what about today",
+      "intent": "QR_Weather_suggestion_chips",
+      "entities": []
+    },
+    {
+      "text": "what about tomorrow",
+      "intent": "QR_Weather_suggestion_chips",
+      "entities": []
+    },
+    {
+      "text": "what are you able to do",
+      "intent": "ST_What_can_bot_do",
+      "entities": []
+    },
+    {
+      "text": "what are you built on",
+      "intent": "ST_Who_are_you",
+      "entities": []
+    },
+    {
+      "text": "what are your capabilities",
+      "intent": "ST_What_can_bot_do",
+      "entities": []
+    },
+    {
+      "text": "what are your skills",
+      "intent": "ST_What_can_bot_do",
+      "entities": []
+    },
+    {
+      "text": "what can i ask you",
+      "intent": "ST_What_can_bot_do",
+      "entities": []
+    },
+    {
+      "text": "what can i do",
+      "intent": "ST_What_can_bot_do",
+      "entities": []
+    },
+    {
+      "text": "what can i say",
+      "intent": "ST_What_can_bot_do",
+      "entities": []
+    },
+    {
+      "text": "what can you do",
+      "intent": "ST_What_can_bot_do",
+      "entities": []
+    },
+    {
+      "text": "what can you understand",
+      "intent": "ST_What_can_bot_do",
+      "entities": []
+    },
+    {
+      "text": "what did you say",
+      "intent": "ST_Repeat",
+      "entities": []
+    },
+    {
+      "text": "what do i call you",
+      "intent": "ST_What_Your_Name",
+      "entities": []
+    },
+    {
+      "text": "what do i say",
+      "intent": "ST_What_can_bot_do",
+      "entities": []
+    },
+    {
+      "text": "what do you know",
+      "intent": "ST_What_can_bot_do",
+      "entities": []
+    },
+    {
+      "text": "what do you run on",
+      "intent": "ST_Who_are_you",
+      "entities": []
+    },
+    {
+      "text": "what is it",
+      "intent": "ST_Who_are_you",
+      "entities": []
+    },
+    {
+      "text": "what is the temperature now",
+      "intent": "WeatherForecast_Request",
+      "entities": [
+        {
+          "entity": "weather_forecast",
+          "startPos": 12,
+          "endPos": 22,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "what is the temperature outside",
+      "intent": "WeatherForecast_Request",
+      "entities": [
+        {
+          "entity": "weather_forecast",
+          "startPos": 12,
+          "endPos": 22,
+          "children": []
+        },
+        {
+          "entity": "weather_forecast",
+          "startPos": 24,
+          "endPos": 30,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "what is the weather for the weekend",
+      "intent": "WeatherForecast_Request",
+      "entities": [
+        {
+          "entity": "weather_forecast",
+          "startPos": 12,
+          "endPos": 18,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "what is this",
+      "intent": "ST_Who_are_you",
+      "entities": []
+    },
+    {
+      "text": "what is this thing",
+      "intent": "ST_Who_are_you",
+      "entities": []
+    },
+    {
+      "text": "what services do you use",
+      "intent": "ST_Who_are_you",
+      "entities": []
+    },
+    {
+      "text": "what should i say",
+      "intent": "ST_What_can_bot_do",
+      "entities": []
+    },
+    {
+      "text": "what things can you help with",
+      "intent": "ST_What_can_bot_do",
+      "entities": []
+    },
+    {
+      "text": "what was that",
+      "intent": "ST_Repeat",
+      "entities": []
+    },
+    {
+      "text": "what's it like outside",
+      "intent": "WeatherForecast_Request",
+      "entities": [
+        {
+          "entity": "weather_forecast",
+          "startPos": 15,
+          "endPos": 21,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "what's new",
+      "intent": "NewsUpdate_Request",
+      "entities": [
+        {
+          "entity": "news_update",
+          "startPos": 7,
+          "endPos": 9,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "what's new in technology",
+      "intent": "NewsUpdate_Request",
+      "entities": [
+        {
+          "entity": "news_update",
+          "startPos": 7,
+          "endPos": 9,
+          "children": []
+        },
+        {
+          "entity": "news_update",
+          "startPos": 14,
+          "endPos": 23,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "what's the latest news",
+      "intent": "NewsUpdate_Request",
+      "entities": [
+        {
+          "entity": "news_update",
+          "startPos": 11,
+          "endPos": 21,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "what's the news",
+      "intent": "NewsUpdate_Request",
+      "entities": [
+        {
+          "entity": "news_update",
+          "startPos": 11,
+          "endPos": 14,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "what's the weather",
+      "intent": "WeatherForecast_Request",
+      "entities": [
+        {
+          "entity": "weather_forecast",
+          "startPos": 11,
+          "endPos": 17,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "what's the weather in london on friday",
+      "intent": "WeatherForecast_Request",
+      "entities": [
+        {
+          "entity": "weather_forecast",
+          "startPos": 11,
+          "endPos": 17,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "what's up",
+      "intent": "ST_How_are_you",
+      "entities": []
+    },
+    {
+      "text": "what's your name",
+      "intent": "ST_What_Your_Name",
+      "entities": []
+    },
+    {
+      "text": "who are you",
+      "intent": "ST_Who_are_you",
+      "entities": []
+    },
+    {
+      "text": "will it rain tomorrow",
+      "intent": "WeatherForecast_Request",
+      "entities": [
+        {
+          "entity": "weather_forecast",
+          "startPos": 8,
+          "endPos": 11,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "yesterday news",
+      "intent": "NewsUpdate_Request",
+      "entities": [
+        {
+          "entity": "news_update",
+          "startPos": 10,
+          "endPos": 13,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "you all right",
+      "intent": "ST_How_are_you",
+      "entities": []
+    },
+    {
+      "text": "you can't hear me",
+      "intent": "ST_Microphone_Check",
+      "entities": []
+    },
+    {
+      "text": "you doing okay",
+      "intent": "ST_How_are_you",
+      "entities": []
+    },
+    {
+      "text": "you have a name",
+      "intent": "ST_What_Your_Name",
+      "entities": []
+    },
+    {
+      "text": "you hear me",
+      "intent": "ST_Microphone_Check",
+      "entities": []
+    },
+    {
+      "text": "you listening",
+      "intent": "ST_Microphone_Check",
+      "entities": []
+    },
+    {
+      "text": "your name",
+      "intent": "ST_What_Your_Name",
+      "entities": []
+    }
+  ],
+  "versionId": "0.1",
+  "name": "IVY",
+  "desc": "EVA NLU set up for export",
+  "culture": "en-us",
+  "tokenizerVersion": "1.0.0",
+  "patternAnyEntities": [],
+  "regex_entities": [],
+  "phraselists": [
+    {
+      "name": "weather synonyms",
+      "mode": true,
+      "words": "weather,forecast,snow,rain,forcast,forecasting,wheather,forcaster,raining,snowing,cloudy,sunny,cold,foggy,warm,hot,humidity,humid,wet,temperature,muddy,slippery,outside,icy,fog,freezing,mud,chilly",
+      "activated": true,
+      "enabledForAllModels": false
+    },
+    {
+      "name": "news synonyms",
+      "mode": true,
+      "words": "news,new,breaking news,headlines,recent news,latest news,upcoming events,press releases,business news,world news,past events,sports news,entertainment news,local news,science,technology,international news,travel,finance,media,marketing,environment,politics,information technology,IT,political,economics,republican,democratic,interesting",
+      "activated": true,
+      "enabledForAllModels": false
+    },
+    {
+      "name": "joke synonyms",
+      "mode": true,
+      "words": "joke,funny,fun,jokes,laugh",
+      "activated": true,
+      "enabledForAllModels": false
+    }
+  ],
+  "regex_features": [],
+  "patterns": [],
+  "settings": []
+}

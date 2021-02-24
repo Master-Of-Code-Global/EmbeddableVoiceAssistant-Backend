@@ -6,7 +6,6 @@ This bot has been created using [Bot Framework](https://dev.botframework.com), i
 
 - Use [LUIS](https://www.luis.ai) to implement core AI capabilities
 - Implement a multi-turn conversation using Dialogs
-- Handle user interruptions for such things as `Help` or `Cancel`
 - Prompt for and validate requests for information from the user
 
 ## Prerequisites
@@ -17,7 +16,7 @@ This sample **requires** prerequisites in order to run.
 
 This bot uses [LUIS](https://www.luis.ai), an AI based cognitive service, to implement language understanding.
 
-- [Node.js](https://nodejs.org) version 10.14.1 or higher
+- [Node.js](https://nodejs.org) version 14.15.1 or higher
 
     ```bash
     # determine node version
@@ -26,7 +25,7 @@ This bot uses [LUIS](https://www.luis.ai), an AI based cognitive service, to imp
 
 ### Create a LUIS Application to enable language understanding
 
-The LUIS model for this example can be found under `cognitiveModels/FlightBooking.json` and the LUIS language model setup, training, and application configuration steps can be found [here](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-v4-luis?view=azure-bot-service-4.0&tabs=javascript).
+The LUIS model for this example can be found under `cognitiveModels/IVY.json` and the LUIS language model setup, training, and application configuration steps can be found [here](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-v4-luis?view=azure-bot-service-4.0&tabs=javascript).
 
 Once you created the LUIS model, update `.env` with your `LuisAppId`, `LuisAPIKey` and `LuisAPIHostName`.
 
