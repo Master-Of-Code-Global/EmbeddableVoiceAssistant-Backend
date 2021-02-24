@@ -18,43 +18,12 @@ class LocationDialog extends ComponentDialog {
 
 		this.addDialog(new TextPrompt(LOCATION_PROMPT));
 		this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
-			// this.requestCountry.bind(this),
-			// this.saveCountry.bind(this),
 			this.requestCity.bind(this),
 			this.checkCity.bind(this),
 			this.saveCity.bind(this),
 		]));
 
 		this.initialDialogId = WATERFALL_DIALOG;
-	}
-
-	async requestCountry(stepContext) {
-		let userLocation = await this.userProfile.get(stepContext.context);
-		if (!userLocation || (userLocation && !userLocation.location)) {
-			userLocation = {
-				location: {
-					countryCode: undefined,
-					city: undefined
-				}
-			};
-			this.userProfile.set(stepContext.context, userLocation);
-		}
-
-		if (userLocation.location && userLocation.location.countryCode) {
-			return await stepContext.next();
-		}
-
-		return await stepContext.prompt(LOCATION_PROMPT, 'Sure, searching for news. What country are you from?');
-	}
-
-	async saveCountry(stepContext) {
-		const country = stepContext.result;
-		if (country) {
-			const userLocation = await this.userProfile.get(stepContext.context);
-			userLocation.location.countryCode = countries[country.toLowerCase()];
-		}
-
-		return await stepContext.next();
 	}
 
 	async requestCity(stepContext) {
@@ -90,6 +59,8 @@ class LocationDialog extends ComponentDialog {
 			return await stepContext.replaceDialog('MainDialog');
 		}
 
+		stepContext.context.activity.text = stepContext.context.activity.text.replace('-', ' ');
+
 		const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);
 
 		if (luisResult.entities && luisResult.entities.geographyV2) {
@@ -107,7 +78,7 @@ class LocationDialog extends ComponentDialog {
 		if (userLocation.location && userLocation.location.city) {
 			return await stepContext.next();
 		}
-
+		
 		const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);
 
 		if (luisResult.entities && luisResult.entities.geographyV2) {
