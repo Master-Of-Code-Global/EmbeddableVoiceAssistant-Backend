@@ -2,6 +2,18 @@
 
 Demonstrate the core capabilities of the Microsoft Bot Framework
 
+### Bot channels registration
+
+Register a bot with the Azure Bot Service. If the bot is hosted elsewhere, you can also make it available in Azure and connect it to the supported channels. All steps to register bot you can find [here](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-registration?view=azure-bot-service-4.0)
+
+Once you registered the bot, update your `.env` with `MicrosoftAppId` and `MicrosoftAppPassword`.
+
+```text
+MicrosoftAppId="Your Microsoft application ID"
+MicrosoftAppPassword="Your Microsoft application password"
+```
+### LUIS
+
 This bot has been created using [Bot Framework](https://dev.botframework.com), it shows how to:
 
 - Use [LUIS](https://www.luis.ai) to implement core AI capabilities
