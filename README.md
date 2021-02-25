@@ -1,6 +1,6 @@
 # IVY
 
-Demonstrate the core capabilities of the Microsoft Bot Framework
+Voice Assistant that demonstrates the core capabilities of the Microsoft Bot Framework. It can be added to any iOS application and configured for your business needs. Here is a [tutorial](https://lab.mocintra.com/oleksandr.afanasiev) for iOS part.
 
 ### Bot channels registration
 
