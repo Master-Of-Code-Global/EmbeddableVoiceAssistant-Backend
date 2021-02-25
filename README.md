@@ -105,7 +105,7 @@ CosmosDbContainerId="Your container name"
     ```
 - Setup LUIS
 
-The prerequisite outlined above contain the steps necessary to provision a language understanding model on www.luis.ai.  Refer to _Create a LUIS Application to enable language understanding_ above for directions to setup and configure LUIS.
+The prerequisite outlined above contain the steps necessary to provision a language understanding model on www.luis.ai.  Refer to _[Create a LUIS Application to enable language understanding](https://lab.mocintra.com/oleksandr.afanasiev/backend-voice-assistant#create-a-luis-application-to-enable-language-understanding)_ above for directions to setup and configure LUIS.
 
 - Start the bot
 
