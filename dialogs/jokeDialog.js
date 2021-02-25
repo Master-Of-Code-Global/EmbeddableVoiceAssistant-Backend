@@ -6,6 +6,7 @@ const JOKE_DIALOG = 'JOKE_DIALOG';
 
 const WATERFALL_DIALOG = 'WATERFALL_DIALOG';
 const JOKE_PROMPT = 'JOKE_PROMPT';
+const MAIN_DIALOG = 'MainDialog';
 
 const jokes = [
   ['What do clouds wear under their shorts?', 'Thunderpants!'],
@@ -74,7 +75,7 @@ class JokeDialog extends ComponentDialog {
 
   async showDataStep(stepContext) {
     if (!this.luisRecognizer.isConfigured) {
-      return await stepContext.replaceDialog('MainDialog');
+      return await stepContext.replaceDialog(MAIN_DIALOG);
     }
 
     const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);

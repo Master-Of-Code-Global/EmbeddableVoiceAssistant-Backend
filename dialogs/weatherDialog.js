@@ -9,6 +9,7 @@ const { weatherIcons } = require('../resources/icons');
 const WEATHER_DIALOG = 'WEATHER_DIALOG';
 const WATERFALL_DIALOG = 'WATERFALL_DIALOG';
 const WEATHER_PROMPT = 'WEATHER_PROMPT';
+const MAIN_DIALOG = 'MainDialog';
 
 class WeatherDialog extends ComponentDialog {
   constructor(luisRecognizer, userState, starter) {
@@ -41,11 +42,11 @@ class WeatherDialog extends ComponentDialog {
     } else {
       await stepContext.context.sendActivity('It looks like the Weather service is not responding at the moment.', null, InputHints.IgnoringInput);
       await stepContext.context.sendActivity('Please check your Internet connection and try again later.', null, InputHints.IgnoringInput);
-      return await stepContext.replaceDialog('MainDialog');
+      return await stepContext.replaceDialog(MAIN_DIALOG);
     }
   }
 
-  async getWeatherData(coordinates) {
+  async getWeatherData(coordinates, stepContext) {
     const url = process.env.CurrentWeatherUrl + coordinates + '&subscription-key=' + process.env.WeatherSubscriptionKey;
     const options = {
       fullResponse: false
@@ -55,7 +56,7 @@ class WeatherDialog extends ComponentDialog {
     if (responseData.results && responseData.results.length > 0) {
       return responseData.results[0];
     } else {
-      return {};
+      return await stepContext.replaceDialog(MAIN_DIALOG);
     }
   }
 
@@ -72,11 +73,11 @@ class WeatherDialog extends ComponentDialog {
     } else {
       await stepContext.context.sendActivity('It looks like the Weather service is not responding at the moment.', null, InputHints.IgnoringInput);
       await stepContext.context.sendActivity('Please check your Internet connection and try again later.', null, InputHints.IgnoringInput);
-      return await stepContext.replaceDialog('MainDialog');
+      return await stepContext.replaceDialog(MAIN_DIALOG);
     }
   }
 
-  async getCoordinates(city, countryCode) {
+  async getCoordinates(city, countryCode, stepContext) {
     const withCountry = countryCode ? '&countrySet=' + countryCode : '';
 
     const url = process.env.CoordinatesUrl + city + '&subscription-key=' + process.env.WeatherSubscriptionKey + withCountry;
@@ -93,7 +94,7 @@ class WeatherDialog extends ComponentDialog {
       if (cityData.results.length > 0) {
         return `${ cityData.results[0].position.lat },${ cityData.results[0].position.lon }`;
       } else {
-        return {};
+	      return await stepContext.replaceDialog(MAIN_DIALOG);
       }
     }
   }
@@ -155,7 +156,7 @@ class WeatherDialog extends ComponentDialog {
         // weatherCard = await this.createDailyCard(city, dailyWeather);
 
         await stepContext.prompt(WEATHER_PROMPT, 'Sorry, I didn’t get that. Please try asking in a different way.');
-        return await stepContext.replaceDialog('MainDialog');
+        return await stepContext.replaceDialog(MAIN_DIALOG);
       } else if (datetime.type === 'date') {
         const weatherData = moment(datetime.timex[0]).format('YYYY-MM-DD');
         const today = moment().format('YYYY-MM-DD');
@@ -174,7 +175,7 @@ class WeatherDialog extends ComponentDialog {
         }
       }
     } else {
-      const weatherCurrentData = await this.getWeatherData(coordinates);
+      const weatherCurrentData = await this.getWeatherData(coordinates, stepContext);
       const weatherQuarterData = await this.getWeatherQuarterData(coordinates, stepContext, undefined);
 
       weatherCard = await this.createCurrentCard(city, weatherCurrentData, weatherQuarterData);

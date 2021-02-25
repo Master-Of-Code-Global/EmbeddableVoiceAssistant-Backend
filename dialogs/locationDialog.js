@@ -4,6 +4,7 @@ const { InputHints, MessageFactory } = require('botbuilder');
 const LOCATION_DIALOG = 'LOCATION_DIALOG';
 const LOCATION_PROMPT = 'LOCATION_PROMPT';
 const WATERFALL_DIALOG = 'WATERFALL_DIALOG';
+const MAIN_DIALOG = 'MainDialog';
 
 class LocationDialog extends ComponentDialog {
   constructor(userState, luisRecognizer) {
@@ -50,7 +51,7 @@ class LocationDialog extends ComponentDialog {
     }
 
     if (!this.luisRecognizer.isConfigured) {
-      return await stepContext.replaceDialog('MainDialog');
+      return await stepContext.replaceDialog(MAIN_DIALOG);
     }
 
     stepContext.context.activity.text = stepContext.context.activity.text.replace('-', ' ');
@@ -85,16 +86,13 @@ class LocationDialog extends ComponentDialog {
         }
         userLocation.location.city = cityWords.join(' ');
         return await stepContext.endDialog();
-        // return await stepContext.next();
       } else {
         await stepContext.prompt(LOCATION_PROMPT, 'Sorry, I didn’t get that. Please try asking in a different way.');
-        return await stepContext.replaceDialog('MainDialog');
-        // return await stepContext.replaceDialog('MainDialog');
+        return await stepContext.replaceDialog(MAIN_DIALOG);
       }
     } else {
       await stepContext.prompt(LOCATION_PROMPT, 'Sorry, I didn’t get that. Please try asking in a different way.');
-      return await stepContext.replaceDialog('MainDialog');
-      // return await stepContext.replaceDialog('MainDialog');
+      return await stepContext.replaceDialog(MAIN_DIALOG);
     }
   }
 }

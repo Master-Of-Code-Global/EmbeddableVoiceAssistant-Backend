@@ -7,6 +7,7 @@ const { countries } = require('../resources/countries');
 const NEWS_DIALOG = 'NEWS_DIALOG';
 const WATERFALL_DIALOG = 'WATERFALL_DIALOG';
 const NEWS_PROMPT = 'NEWS_PROMPT';
+const MAIN_DIALOG = 'MainDialog';
 
 const bingHost = process.env.BING_SEARCH_V7_ENDPOINT;
 
@@ -96,7 +97,7 @@ class NewsDialog extends ComponentDialog {
         console.error(responseData.body.error);
         await stepContext.context.sendActivity(serviceNotResp, null, InputHints.IgnoringInput);
         await stepContext.context.sendActivity(checkConnection, null, InputHints.IgnoringInput);
-        return stepContext.replaceDialog('MainDialog');
+        return stepContext.replaceDialog(MAIN_DIALOG);
       } else {
         if (responseData.body.value.length > 0) {
           const newsCarousel = buildNewsCarousel(responseData.body.value);
@@ -105,7 +106,7 @@ class NewsDialog extends ComponentDialog {
         } else {
           await stepContext.context.sendActivity(serviceNotResp, null, InputHints.IgnoringInput);
           await stepContext.context.sendActivity(checkConnection, null, InputHints.IgnoringInput);
-          return stepContext.replaceDialog('MainDialog');
+          return stepContext.replaceDialog(MAIN_DIALOG);
         }
       }
 

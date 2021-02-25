@@ -1,9 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-// index.js is used to setup and configure your bot
-
-// Import required packages
 const path = require('path');
 
 // Note: Ensure you have a .env file and include LuisAppId, LuisAPIKey and LuisAPIHostName.
@@ -22,10 +16,6 @@ const { IVYLuisRecognizer } = require('./dialogs/luisRecognizer');
 // This bot's main dialog.
 const { DialogAndWelcomeBot } = require('./bots/dialogAndWelcomeBot');
 const { MainDialog } = require('./dialogs/mainDialog');
-
-// the bot's booking dialog
-// const { BookingDialog } = require('./dialogs/bookingDialog');
-// const BOOKING_DIALOG = 'bookingDialog';
 
 // Create adapter.
 // See https://aka.ms/about-bot-adapter to learn more about adapters.
@@ -86,16 +76,13 @@ if (process.env.NODE_ENV !== 'local') {
   userState = new UserState(memoryStorage);
 }
 
-// If configured, pass in the FlightBookingRecognizer.  (Defining it externally allows it to be mocked for tests)
 const { LuisAppId, LuisAPIKey, LuisAPIHostName } = process.env;
 const luisConfig = { applicationId: LuisAppId, endpointKey: LuisAPIKey, endpoint: `https://${ LuisAPIHostName }` };
 
 const luisRecognizer = new IVYLuisRecognizer(luisConfig);
 
 // Create the main dialog.
-// const bookingDialog = new BookingDialog(BOOKING_DIALOG);
 const dialog = new MainDialog(luisRecognizer, userState);
-// const dialog = new MainDialog(luisRecognizer, bookingDialog);
 const bot = new DialogAndWelcomeBot(conversationState, userState, dialog);
 
 // Create HTTP server

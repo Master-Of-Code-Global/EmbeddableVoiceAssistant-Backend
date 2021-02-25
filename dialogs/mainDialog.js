@@ -6,10 +6,11 @@ const { StarterDialog } = require('./starter');
 const { WeatherDialog } = require('./weatherDialog');
 const OPTIONS_PROMPT = 'optionsPrompt';
 const MAIN_WATERFALL_DIALOG = 'optionsDialog';
+const MAIN_DIALOG = 'MainDialog';
 
 class MainDialog extends ComponentDialog {
   constructor(luisRecognizer, userState) {
-    super('MainDialog');
+    super(MAIN_DIALOG);
 
     this.userState = userState;
     this.starter = new StarterDialog(luisRecognizer);

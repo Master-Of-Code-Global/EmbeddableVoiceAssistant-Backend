@@ -8,6 +8,7 @@ const buttons = require('../cardTemplates/buttons');
 const OPTIONS_PROMPT = 'optionsPrompt';
 const NEWS_PROMPT = 'NEWS_PROMPT';
 const JOKE_PROMPT = 'JOKE_PROMPT';
+const MAIN_DIALOG = 'MainDialog';
 
 class StarterDialog {
   constructor(luisRecognizer) {
@@ -80,7 +81,7 @@ class StarterDialog {
 
   async showDataStep(stepContext) {
     if (!this.luisRecognizer.isConfigured) {
-      return await stepContext.replaceDialog('MainDialog');
+      return await stepContext.replaceDialog(MAIN_DIALOG);
     }
 
     const luisResult = await this.luisRecognizer.executeLuisQuery(stepContext.context);
@@ -98,38 +99,38 @@ class StarterDialog {
 
     case 'ST_user_greeting':
       await stepContext.context.sendActivity('Hi, Ivy here, how can I help?', 'Hi, Ivy here, how can I help?', InputHints.IgnoringInput);
-      return stepContext.replaceDialog('MainDialog');
+      return stepContext.replaceDialog(MAIN_DIALOG);
 
     case 'ST_What_Your_Name':
       await stepContext.context.sendActivity('I’m Ivy. Nice to meet you!', 'I’m Ivy. Nice to meet you!', InputHints.IgnoringInput);
-      return stepContext.replaceDialog('MainDialog');
+      return stepContext.replaceDialog(MAIN_DIALOG);
 
     case 'ST_How_are_you':
       await stepContext.context.sendActivity(
         'I’m good! If you are looking for a laugh, try saying ‘’Tell me a joke’’.',
         'I’m good! If you are looking for a laugh, try saying ‘’Tell me a joke’’.',
         InputHints.IgnoringInput);
-      return stepContext.replaceDialog('MainDialog');
+      return stepContext.replaceDialog(MAIN_DIALOG);
 
     case 'ST_Microphone_Check':
       await stepContext.context.sendActivity('Yes, I’m listening.', 'Yes, I’m listening.', InputHints.IgnoringInput);
       await stepContext.context.sendActivity('Go ahead and ask me some of the things you see below:', 'Go ahead and ask me some of the things you see below:', InputHints.IgnoringInput);
-      return stepContext.replaceDialog('MainDialog');
+      return stepContext.replaceDialog(MAIN_DIALOG);
 
     case 'ST_Repeat':
       await stepContext.context.sendActivity('I’m Ivy. Nice to meet you!', 'I’m Ivy. Nice to meet you!', InputHints.IgnoringInput);
-      return stepContext.replaceDialog('MainDialog');
+      return stepContext.replaceDialog(MAIN_DIALOG);
 
     case 'ST_What_can_bot_do':
       await stepContext.context.sendActivity(
         'Just tap on the microphone icon and ask me some of the things you see below:',
         'Just tap on the microphone icon and ask me some of the things you see below:',
         InputHints.IgnoringInput);
-      return stepContext.replaceDialog('MainDialog');
+      return stepContext.replaceDialog(MAIN_DIALOG);
 
     case 'ST_ThankYou':
       await stepContext.context.sendActivity('I’m always here if you need me.', 'I’m always here if you need me.', InputHints.IgnoringInput);
-      return stepContext.replaceDialog('MainDialog');
+      return stepContext.replaceDialog(MAIN_DIALOG);
 
     case 'ST_Who_are_you':
       await stepContext.context.sendActivity(
@@ -142,12 +143,12 @@ class StarterDialog {
         InputHints.IgnoringInput
       );
 
-      return stepContext.replaceDialog('MainDialog');
+      return stepContext.replaceDialog(MAIN_DIALOG);
 
     default: {
       const didntUnderstandMessageText = 'Sorry, I didn’t get that. Please try asking in a different way.';
       await stepContext.context.sendActivity(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
-      return stepContext.replaceDialog('MainDialog');
+      return stepContext.replaceDialog(MAIN_DIALOG);
     }
     }
   }
