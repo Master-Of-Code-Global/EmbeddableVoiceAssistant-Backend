@@ -49,7 +49,7 @@ LuisAPIHostName="Your LUIS App region here (i.e: westus.api.cognitive.microsoft.
 
 ### Create a Bing News API Resource
 
-Bot uses Bing News Search API to show news. Start using the Bing News Search API by creating Azure resource [Bing Search v7 resource](https://ms.portal.azure.com/#create/Microsoft.CognitiveServicesBingSearch-v7).
+Bot uses [Bing News Search API](https://docs.microsoft.com/en-us/azure/cognitive-services/bing-news-search/quickstarts/client-libraries?pivots=programming-language-javascript) to show news. Start using the Bing News Search API by creating Azure resource [Bing Search v7 resource](https://ms.portal.azure.com/#create/Microsoft.CognitiveServicesBingSearch-v7).
 
 Once you created resource, update `.env` with your `BING_SEARCH_V7_SUBSCRIPTION_KEY` and `BING_SEARCH_V7_ENDPOINT`.
 
@@ -60,22 +60,21 @@ BING_SEARCH_V7_ENDPOINT="Your endpoint to access Bing resource"
 
 ### Create a Azure Maps resource
 
-Bot uses Azure Maps service to get weather for user's location. Create Azure Maps resource in your Azure Portal.
+Bot uses Azure Maps service to get [weather](https://docs.microsoft.com/en-us/rest/api/maps/weather) for user's location. Create Azure Maps resource in your Azure Portal.
 
-Once you created resource, update your `.env` with `WeatherSubscriptionKey`. Also, add urls of the endpoiints to get weather.
+Once you created resource, update your `.env` with `WeatherSubscriptionKey`. Also, add urls of the endpoints to get weather.
 
 ```text
 WeatherSubscriptionKey="Your Azure Maps Primary key"
 CurrentWeatherUrl=https://atlas.microsoft.com/weather/currentConditions/json?api-version=1.0&query=
 QuarterWeatherUrl=https://atlas.microsoft.com/weather/forecast/quarterDay/json?api-version=1.0&query=
 CoordinatesUrl=https://atlas.microsoft.com/search/address/json?api-version=1.0&query=
-ReverseAddressSearch=https://atlas.microsoft.com/search/address/reverse/json?api-version=1.0
 DailyWeatherUrl=https://atlas.microsoft.com/weather/forecast/daily/json?api-version=1.0&query=
 ```
 
 ### Create a Container to save all weather icons
 
-Bot uses Storate Container with weather icons to show icons in the weather adaptive cards. Create a Container in your Azure portal. Copy all icons from folder `resources/weather-icons/*` to your folder created in the container.
+Bot uses Storage Container with weather icons to show icons in the weather adaptive cards. Create a Container in your Azure portal. Copy all icons from folder `resources/weather-icons/*` to your folder created in the container.
 
 Once you created container and copied icons, update `.env` with your `WeatherIconsUrl` you can find on the `Properties` page of the container.
 
