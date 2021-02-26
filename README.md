@@ -1,12 +1,12 @@
-# IVY
+# Embeddable Voice Assistant
 
-Voice Assistant that demonstrates the core capabilities of the Microsoft Bot Framework. It can be added to any iOS application and configured for your business needs. Here is a [tutorial](https://lab.mocintra.com/oleksandr.afanasiev) for iOS part.
+Voice Assistant demonstrates the core capabilities of the Microsoft Bot Framework with the basic flow with sharing weather forecasts, news and jokes via voice and UI interface. It can be added to any iOS application and configured for your business needs. Here is a [tutorial](/ios-voice-assistant/-/blob/main/README.md) for iOS part.
 
 ### Bot channels registration
 
 Register a bot with the Azure Bot Service. If the bot is hosted elsewhere, you can also make it available in Azure and connect it to the supported channels. All steps to register bot you can find [here](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-registration?view=azure-bot-service-4.0)
 
-Once you registered the bot, update your `.env` with `MicrosoftAppId` and `MicrosoftAppPassword`.
+Once you register the bot, update your `.env` with `MicrosoftAppId` and `MicrosoftAppPassword`.
 
 ```text
 MicrosoftAppId="Your Microsoft application ID"
@@ -14,7 +14,7 @@ MicrosoftAppPassword="Your Microsoft application password"
 ```
 ### LUIS
 
-This bot has been created using [Bot Framework](https://dev.botframework.com), it shows how to:
+This bot has been created using [Bot Framework](https://dev.botframework.com). It shows how to:
 
 - Use [LUIS](https://www.luis.ai) to implement core AI capabilities
 - Implement a multi-turn conversation using Dialogs
@@ -39,7 +39,7 @@ This bot uses [LUIS](https://www.luis.ai), an AI based cognitive service, to imp
 
 The LUIS model for this example can be found under `cognitiveModels/IVY.json` and the LUIS language model setup, training, and application configuration steps can be found [here](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-v4-luis?view=azure-bot-service-4.0&tabs=javascript).
 
-Once you created the LUIS model, update `.env` with your `LuisAppId`, `LuisAPIKey` and `LuisAPIHostName`.
+Once you create the LUIS model, update `.env` with your `LuisAppId`, `LuisAPIKey` and `LuisAPIHostName`.
 
 ```text
 LuisAppId="Your LUIS App Id"
@@ -62,7 +62,7 @@ BING_SEARCH_V7_ENDPOINT="Your endpoint to access Bing resource"
 
 Bot uses Azure Maps service to get [weather](https://docs.microsoft.com/en-us/rest/api/maps/weather) for user's location. Create Azure Maps resource in your Azure Portal.
 
-Once you created resource, update your `.env` with `WeatherSubscriptionKey`. Also, add urls of the endpoints to get weather.
+Once you create resource, update your `.env` with `WeatherSubscriptionKey`. Also, add urls of the endpoints to get weather.
 
 ```text
 WeatherSubscriptionKey="Your Azure Maps Primary key"
