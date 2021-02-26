@@ -1,8 +1,8 @@
 {
     "name": "EVA",
     "version": "1.0.0",
-    "description": "Demonstrate the core capabilities of the Microsoft Bot Framework",
-    "author": "Generated using Microsoft Bot Builder Yeoman generator v4.10.3",
+    "description": "Voice Assistant that demonstrates the core capabilities of the Microsoft Bot Framework.",
+    "author": "Master of Code Global",
     "license": "MIT",
     "main": "index.js",
     "scripts": {
