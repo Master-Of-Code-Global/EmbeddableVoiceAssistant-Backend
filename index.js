@@ -17,11 +17,24 @@ const { IVYLuisRecognizer } = require('./dialogs/luisRecognizer');
 const { DialogAndWelcomeBot } = require('./bots/dialogAndWelcomeBot');
 const { MainDialog } = require('./dialogs/mainDialog');
 
+const {
+  LuisAppId,
+  LuisAPIKey,
+  LuisAPIHostName,
+  MicrosoftAppId,
+  MicrosoftAppPassword,
+  NODE_ENV,
+  CosmosDbEndpoint,
+  CosmosDbAuthKey,
+  CosmosDbDatabaseId,
+  CosmosDbContainerId
+} = process.env;
+
 // Create adapter.
 // See https://aka.ms/about-bot-adapter to learn more about adapters.
 const adapter = new BotFrameworkAdapter({
-  appId: process.env.MicrosoftAppId,
-  appPassword: process.env.MicrosoftAppPassword
+  appId: MicrosoftAppId,
+  appPassword: MicrosoftAppPassword
 });
 
 // Catch-all for errors.
@@ -60,12 +73,12 @@ adapter.onTurnError = onTurnErrorHandler;
 let userState = {};
 let conversationState = {};
 
-if (process.env.NODE_ENV !== 'local') {
+if (NODE_ENV !== 'local') {
   const cosmosStorage = new CosmosDbPartitionedStorage({
-    cosmosDbEndpoint: process.env.CosmosDbEndpoint,
-    authKey: process.env.CosmosDbAuthKey,
-    databaseId: process.env.CosmosDbDatabaseId,
-    containerId: process.env.CosmosDbContainerId,
+    cosmosDbEndpoint: CosmosDbEndpoint,
+    authKey: CosmosDbAuthKey,
+    databaseId: CosmosDbDatabaseId,
+    containerId: CosmosDbContainerId,
     compatibilityMode: false
   });
   conversationState = new ConversationState(cosmosStorage);
@@ -76,9 +89,7 @@ if (process.env.NODE_ENV !== 'local') {
   userState = new UserState(memoryStorage);
 }
 
-const { LuisAppId, LuisAPIKey, LuisAPIHostName } = process.env;
 const luisConfig = { applicationId: LuisAppId, endpointKey: LuisAPIKey, endpoint: `https://${ LuisAPIHostName }` };
-
 const luisRecognizer = new IVYLuisRecognizer(luisConfig);
 
 // Create the main dialog.
@@ -104,11 +115,10 @@ server.post('/api/messages', (req, res) => {
 
 // Listen for Upgrade requests for Streaming.
 server.on('upgrade', (req, socket, head) => {
-  console.log('Updated Conversation');
   // Create an adapter scoped to this WebSocket connection to allow storing session data.
   const streamingAdapter = new BotFrameworkAdapter({
-    appId: process.env.MicrosoftAppId,
-    appPassword: process.env.MicrosoftAppPassword
+    appId: MicrosoftAppId,
+    appPassword: MicrosoftAppPassword
   });
     // Set onTurnError for the BotFrameworkAdapter created for each connection.
   streamingAdapter.onTurnError = onTurnErrorHandler;
